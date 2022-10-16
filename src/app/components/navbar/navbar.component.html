@@ -1,0 +1,59 @@
+<nav ngxNavbarDynamicExpand
+     class="navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand"
+           href="#">
+            <img src="./assets/logo.svg"
+                 alt="하사기"
+                 height="30">
+        </a>
+        <button class="navbar-toggler"
+                type="button"
+                (click)="collapse.toggle()"
+                aria-controls="main-nav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="
+          navbar-toggler-icon
+          d-flex
+          align-items-center
+          justify-content-center
+        ">
+            </span>
+        </button>
+        <ngx-navbar-collapse id="main-nav"
+                             #collapse="ngxNavbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link"
+                       href="#">Список</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#">Добавить</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="#">Архив</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"
+                    ngbDropdown>
+                    <a type="button"
+                       class="nav-link dropdown-toggle"
+                       id="navDrop1"
+                       ngbDropdownToggle>Чей список</a>
+                    <div ngbDropdownMenu
+                         aria-labelledby="navDrop1">
+                        <ng-container *ngFor="let user of users">
+                            <button *ngIf="user.hasList"
+                                    ngbDropdownItem>{{user.userName}}</button>
+                        </ng-container>
+                    </div>
+                </li>
+            </ul>
+
+        </ngx-navbar-collapse>
+    </div>
+</nav>
