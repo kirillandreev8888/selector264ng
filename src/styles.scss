@@ -2,3 +2,15 @@
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+/* ng-select */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+//увеличить размер шрифта на i*10%
+@for $i from 5 through 200 {
+  @if $i % 5==0 {
+    .text-enlarge-#{$i} {
+      font-size: 1 + 0.01em * $i;
+    }
+  }
+}

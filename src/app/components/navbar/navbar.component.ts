@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { UserInfo } from 'src/app/common/interfaces/title.interface';
 
 @Component({
   selector: 'app-navbar',
@@ -7,14 +9,27 @@ import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-  users: { userName: string; name: string; hasList?: boolean }[] = [
-    { name: 'Макс', userName: 'ker264', hasList: true },
-    { name: 'Паша', userName: 'LordAsheron', hasList: true },
-    { name: 'Ника', userName: 'Tecnika', hasList: true },
-    { name: 'Кирилл', userName: 'uspdd' },
-  ];
+  users: UserInfo[] = [];
 
-  constructor() {}
+  currentUser: string = localStorage.getItem('currentUser')
+    ? localStorage.getItem('currentUser')!
+    : 'Макс';
+  currentListOwner: string = localStorage.getItem('currentListOwner')
+    ? localStorage.getItem('currentListOwner')!
+    : 'ker264';
 
-  ngOnInit(): void {}
+  setListOwner(listOwner: string) {
+    this.currentListOwner = listOwner;
+  }
+  setUser(user: string) {
+    this.currentUser = user;
+  }
+  constructor(private database: AngularFireDatabase) {}
+
+  ngOnInit(): void {
+    this.database
+      .list('/users')
+      .valueChanges()
+      .subscribe((u) => (this.users = <UserInfo[]>u));
+  }
 }

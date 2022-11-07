@@ -1,0 +1,47 @@
+.title-card{
+  @media screen and (min-width: 900px) {
+  }
+}
+.text-full-wrap {
+  word-wrap: break-word;
+}
+//первый на зуме сдвинут вниз
+.title-card:first-child .image-container img:hover {
+  transform: translate(0, 45px) scale(2.5);
+}
+//последний на зуме сдвинут вверх
+.title-card:not(:first-child):last-child .image-container img:hover {
+  transform: translate(0, -45px) scale(2.5);
+}
+
+.image-container {
+  min-width: fit-content;
+
+  img {
+    $transition: all 0.15s;
+    transition: $transition;
+
+    &:hover {
+      transform: scale(2.5);
+      transition: $transition;
+    }
+  }
+}
+
+.icon-mimic {
+  position: relative;
+  width: 1.5em;
+  padding: 0 0.5em;
+  height: 1.5em;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.2em;
+  border: 1px solid;
+  border-radius: 1em;
+
+  span {
+    top: -0.2em;
+    left: -0.05em;
+    position: relative;
+  }
+}

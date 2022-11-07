@@ -5,4 +5,8 @@ nav{
       margin-top: -10px;
     }
   }
+  .nav-link-mimic{
+    color: var(--bs-nav-link-color);
+    user-select: none;
+  }
 }

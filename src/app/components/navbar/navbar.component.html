@@ -23,32 +23,57 @@
         </button>
         <ngx-navbar-collapse id="main-nav"
                              #collapse="ngxNavbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link"
-                       href="#">Список</a>
+                    <a class="nav-link text-enlarge-5"
+                       routerLink="/list">Список</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-enlarge-5">
                     <a class="nav-link"
-                       href="#">Добавить</a>
+                       routerLink="/add">Добавить</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-enlarge-5">
                     <a class="nav-link"
-                       href="#">Архив</a>
+                       routerLink="/archive">Архив</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item"
+                <li class="nav-item me-3"
                     ngbDropdown>
-                    <a type="button"
-                       class="nav-link dropdown-toggle"
-                       id="navDrop1"
-                       ngbDropdownToggle>Чей список</a>
+                    <div class="nav-link-mimic text-center">Чей список</div>
+                    <div class="d-flex justify-content-center ps-2">
+                        <a type="button"
+                           class="nav-link text-light dropdown-toggle py-0"
+                           id="navDrop1"
+                           ngbDropdownToggle>
+                            {{currentListOwner}}
+                        </a>
+                    </div>
                     <div ngbDropdownMenu
                          aria-labelledby="navDrop1">
                         <ng-container *ngFor="let user of users">
                             <button *ngIf="user.hasList"
-                                    ngbDropdownItem>{{user.userName}}</button>
+                                    ngbDropdownItem
+                                    (click)="setListOwner(user.userName)">{{user.userName}}</button>
+                        </ng-container>
+                    </div>
+                </li>
+                <li class="nav-item"
+                    ngbDropdown>
+                    <div class="nav-link-mimic text-center">Пользователь</div>
+                    <div class="d-flex justify-content-center ps-2">
+                        <a type="button"
+                           class="nav-link text-light dropdown-toggle py-0"
+                           id="navDrop2"
+                           ngbDropdownToggle>
+                            {{currentUser}}
+                        </a>
+                    </div>
+                    <div ngbDropdownMenu
+                         aria-labelledby="navDrop2">
+                        <ng-container *ngFor="let user of users">
+                            <button ngbDropdownItem
+                                    (click)="setUser(user.name)">{{user.name}}</button>
                         </ng-container>
                     </div>
                 </li>
