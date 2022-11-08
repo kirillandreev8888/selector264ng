@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserInfo } from 'src/app/common/interfaces/title.interface';
+import { GlobalSharedService } from 'src/app/global.shared.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -11,25 +14,24 @@ import { UserInfo } from 'src/app/common/interfaces/title.interface';
 export class NavbarComponent implements OnInit {
   users: UserInfo[] = [];
 
-  currentUser: string = localStorage.getItem('currentUser')
-    ? localStorage.getItem('currentUser')!
-    : 'Макс';
-  currentListOwner: string = localStorage.getItem('currentListOwner')
-    ? localStorage.getItem('currentListOwner')!
-    : 'ker264';
+
 
   setListOwner(listOwner: string) {
-    this.currentListOwner = listOwner;
+    this.globalSharedService.currentListOwner = listOwner;
   }
   setUser(user: string) {
-    this.currentUser = user;
+    this.globalSharedService.currentUser = user;
   }
-  constructor(private database: AngularFireDatabase) {}
+  constructor(
+    private database: AngularFireDatabase,
+    public globalSharedService: GlobalSharedService,
+  ) {}
 
   ngOnInit(): void {
     this.database
       .list('/users')
       .valueChanges()
+      .pipe(untilDestroyed(this))
       .subscribe((u) => (this.users = <UserInfo[]>u));
   }
 }

@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GlobalSharedService {
+  constructor() {}
 
-  constructor() { }
+  currentUser: string = localStorage.getItem('currentUser') || 'Макс';
+  currentListOwner: string = 'test'
+    // localStorage.getItem('currentListOwner') || 'ker264';
 }

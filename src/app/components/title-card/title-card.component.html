@@ -1,14 +1,17 @@
-<div class="title-card container-fluid row flex-wrap justify-content-center align-items-center border border-muted rounded p-2">
+<div
+     class="title-card container-fluid row flex-wrap justify-content-center align-items-center border border-muted rounded p-2">
     <div class="col-1 image-container">
         <img [src]="title.pic"
              height="150px"
              alt="img">
     </div>
     <div class="col-9 d-flex flex-column justify-content-center">
-        <h2 class="text-primary text-center text-full-wrap mb-1">{{title.name}}</h2>
+        <a [routerLink]="['/edit', ]" [queryParams]="{from: mode, id: title.id}">
+            <h2 class="text-primary text-center text-full-wrap mb-1">{{title.name}}</h2>
+        </a>
         <div class="d-flex flex-wrap justify-content-around mb-2 text-enlarge-15">
             <div class="px-1"><span class="text-secondary">Серии:</span> {{title.episodes}}</div>
-            <div class="px-1" ><span class="text-secondary">Дата:</span> {{title.date | ngbDate}}</div>
+            <div class="px-1"><span class="text-secondary">Дата:</span> {{title.date | ngbDate}}</div>
             <div class="px-1"><span class="text-secondary">Рейтинг:</span> {{title.rating}}</div>
         </div>
         <div class="d-flex flex-wrap justify-content-around mb-2">
@@ -26,7 +29,9 @@
             <a class="btn flex-grow-1 py-0 d-flex justify-content-center align-items-center"
                [ngClass]="title.watch_link ? 'btn-success': 'btn-outline-success'"
                [class.disabled]="!title.torrent_link"
-               [href]="title.torrent_link"><div class="icon-mimic"><span>µ</span></div></a>
+               [href]="title.torrent_link">
+                <div class="icon-mimic"><span>µ</span></div>
+            </a>
         </div>
     </div>
     <div class="col-1">

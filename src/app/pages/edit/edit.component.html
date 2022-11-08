@@ -70,24 +70,17 @@
                    placeholder="Введите количество серий"
                    [(ngModel)]="title.episodes">
         </div>
-        <!-- годы -->
-        <!-- <div class="mb-3">
-            <input type="text"
-                   class="form-control"
-                   id="input-years"
-                   placeholder="Введите годы"
-                   [(ngModel)]="title.years">
-        </div> -->
+        <!-- дата -->
         <div class="input-group mb-3">
-			<input
-				class="form-control"
-				name="dp"
-				[(ngModel)]="title.date"
-				ngbDatepicker
-				#d="ngbDatepicker"
-			/>
-			<button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()" type="button"></button>
-		</div>
+            <input class="form-control"
+                   name="dp"
+                   [(ngModel)]="title.date"
+                   ngbDatepicker
+                   #d="ngbDatepicker" />
+            <button class="btn btn-outline-secondary bi bi-calendar3"
+                    (click)="d.toggle()"
+                    type="button"></button>
+        </div>
         <!-- теги -->
         <div class="mb-3">
             <ng-select [(ngModel)]="title.tags"
@@ -108,16 +101,26 @@
         </div>
         <!-- категория -->
         <h6 class="text-center text-secondary">Категория</h6>
-        <select class="form-select mb-2"
+        <select class="form-select mb-3"
                 id="select-status"
                 [(ngModel)]="title.status">
             <option value="list">Основной список</option>
             <option value="ongoing">Не вышло</option>
             <option value="archive">архив</option>
         </select>
-        <div class="container-fluid d-flex justify-content-center">
+        <div *ngIf="mode=='add'"
+             class="container-fluid d-flex justify-content-center">
             <button class="btn btn-success"
                     (click)="saveTitle()">Добавить</button>
+        </div>
+        <div *ngIf="mode=='edit'"
+             class="container-fluid d-flex flex-wrap justify-content-center gap-2">
+            <button class="btn btn-danger"
+                    (click)="deleteTitle()">Удалить</button>
+            <button class="btn btn-primary"
+                    (click)="archiveTitle()">Просмотрено</button>
+            <button class="btn btn-success"
+                    (click)="saveTitle()">Сохранить изменения</button>
         </div>
     </div>
 </div>
