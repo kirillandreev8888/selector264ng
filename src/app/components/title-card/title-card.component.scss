@@ -1,6 +1,13 @@
 .title-card{
   @media screen and (min-width: 900px) {
   }
+  a{
+    text-decoration: none;
+    &:hover{
+      text-decoration: underline;
+      filter: brightness(80%);
+    }
+  }
 }
 .text-full-wrap {
   word-wrap: break-word;

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TtileInfo } from 'src/app/common/interfaces/title.interface';
+import { TitleInfoWithId, TtileInfo } from 'src/app/common/interfaces/title.interface';
 
 @Component({
   selector: 'titleCard',
@@ -7,7 +7,8 @@ import { TtileInfo } from 'src/app/common/interfaces/title.interface';
   styleUrls: ['./title-card.component.scss'],
 })
 export class TitleCardComponent implements OnInit {
-  @Input() title!: TtileInfo;
+  @Input()  mode?: 'titles' | 'archive';
+  @Input() title!: TitleInfoWithId;
   constructor() {}
 
   ngOnInit(): void {}

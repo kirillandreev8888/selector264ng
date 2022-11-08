@@ -12,6 +12,16 @@ const routes: Routes = [
   {
     path: 'list',
     component: ListComponent,
+    data: {
+      mode: 'titles',
+    },
+  },
+  {
+    path: 'archive',
+    component: ListComponent,
+    data: {
+      mode: 'archive',
+    },
   },
   {
     path: 'add',
