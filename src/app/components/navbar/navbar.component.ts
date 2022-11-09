@@ -17,10 +17,10 @@ export class NavbarComponent implements OnInit {
 
 
   setListOwner(listOwner: string) {
-    this.globalSharedService.currentListOwner = listOwner;
+    this.globalSharedService.currentListOwner.next(listOwner);
   }
   setUser(user: string) {
-    this.globalSharedService.currentUser = user;
+    this.globalSharedService.currentUser.next(user);
   }
   constructor(
     private database: AngularFireDatabase,

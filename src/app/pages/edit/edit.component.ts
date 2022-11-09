@@ -40,7 +40,7 @@ export class EditComponent implements OnInit {
     if (this.mode == 'edit' && this.id && this.from)
       (
         this.database.object(
-          `/${this.globalSharedService.currentListOwner}/${this.from}/${this.id}`,
+          `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
         ) as AngularFireObject<TtileInfo>
       )
         .snapshotChanges()
@@ -81,25 +81,30 @@ export class EditComponent implements OnInit {
 
   async saveTitle() {
     if (this.mode == 'add') {
-      this.database
+      await this.database
         .list(
-          `/${this.globalSharedService.currentListOwner}/${
+          `/${this.globalSharedService.currentListOwner.value}/${
             this.title.status == 'archive' ? 'archive' : 'titles'
           }/`,
         )
         .push(this.title);
     } else if (this.mode == 'edit') {
-      this.database
+      await this.database
         .object(
-          `/${this.globalSharedService.currentListOwner}/${
+          `/${this.globalSharedService.currentListOwner.value}/${
             this.title.status == 'archive' ? 'archive' : 'titles'
           }/${this.id}`,
         )
         .set(this.title);
     }
+    window.history.back();
   }
 
-  deleteTitle() {}
+  deleteTitle() {
+    window.history.back();
+  }
 
-  archiveTitle() {}
+  archiveTitle() {
+    window.history.back();
+  }
 }

@@ -14,6 +14,15 @@ const routes: Routes = [
     component: ListComponent,
     data: {
       mode: 'titles',
+      submode: 'list',
+    },
+  },
+  {
+    path: 'ongoing',
+    component: ListComponent,
+    data: {
+      mode: 'titles',
+      submode: 'ongoing',
     },
   },
   {

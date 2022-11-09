@@ -1,25 +1,32 @@
-.title-card{
-  @media screen and (min-width: 900px) {
-  }
-  a{
+.title-card {
+  @media screen and (min-width: 900px) {}
+
+  a {
     text-decoration: none;
-    &:hover{
+
+    &:hover {
       text-decoration: underline;
       filter: brightness(80%);
     }
   }
 }
+
 .text-full-wrap {
   word-wrap: break-word;
 }
-//первый на зуме сдвинут вниз
-.title-card:first-child .image-container img:hover {
-  transform: translate(0, 45px) scale(2.5);
+
+::ng-deep {
+  //первый на зуме сдвинут вниз
+  .title-card-container:first-child .image-container img:hover {
+    transform: translate(0, 45px) scale(2.5) !important;
+  }
+
+  //последний на зуме сдвинут вверх
+  .title-card-container:not(:first-child):last-child .image-container img:hover {
+    transform: translate(0, -75px) scale(2.5) !important;
+  }
 }
-//последний на зуме сдвинут вверх
-.title-card:not(:first-child):last-child .image-container img:hover {
-  transform: translate(0, -45px) scale(2.5);
-}
+
 
 .image-container {
   min-width: fit-content;
