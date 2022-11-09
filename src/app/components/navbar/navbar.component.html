@@ -46,7 +46,7 @@
                            class="nav-link text-light dropdown-toggle py-0"
                            id="navDrop1"
                            ngbDropdownToggle>
-                            {{globalSharedService.currentListOwner}}
+                            {{globalSharedService.currentListOwner.value}}
                         </a>
                     </div>
                     <div ngbDropdownMenu
@@ -66,7 +66,7 @@
                            class="nav-link text-light dropdown-toggle py-0"
                            id="navDrop2"
                            ngbDropdownToggle>
-                            {{globalSharedService.currentUser}}
+                            {{globalSharedService.currentUser.value}}
                         </a>
                     </div>
                     <div ngbDropdownMenu

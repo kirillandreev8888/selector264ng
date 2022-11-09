@@ -6,7 +6,8 @@
              alt="img">
     </div>
     <div class="col-9 d-flex flex-column justify-content-center">
-        <a [routerLink]="['/edit', ]" [queryParams]="{from: mode, id: title.id}">
+        <a [routerLink]="['/edit', ]"
+           [queryParams]="{from: mode, id: title.id}">
             <h2 class="text-primary text-center text-full-wrap mb-1">{{title.name}}</h2>
         </a>
         <div class="d-flex flex-wrap justify-content-around mb-2 text-enlarge-15">

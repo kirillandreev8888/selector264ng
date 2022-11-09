@@ -1,4 +1,13 @@
-<div class="mb-3" *ngFor="let title of titles">
-    <!-- {{test | json}} -->
-    <titleCard [mode]="mode" [title]="title"></titleCard>
+<ul class="nav nav-tabs mb-1" *ngIf="mode=='titles'">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="submode=='list'" aria-current="page" routerLink="/list">Основной список</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="submode=='ongoing'" routerLink="/ongoing">Список не вышедшего</a>
+    </li>
+  </ul>
+<div>
+    <div class="mb-3 title-card-container" *ngFor="let title of titles">
+        <titleCard [mode]="mode" [title]="title"></titleCard>
+    </div>
 </div>
