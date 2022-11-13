@@ -1,12 +1,12 @@
 <div [id]="title.id"
-     class="title-card container-fluid row ms-0 me-0 flex-wrap justify-content-center align-items-center border border-muted rounded p-2">
+     class="title-card w-100 row ms-0 me-0 justify-content-center align-items-center border border-muted rounded p-2 gap-2">
     <div class="col-1 image-container"
          (click)="onCheck()"
          [class.checked]="checked">
         <img [src]="title.pic"
              alt="img">
     </div>
-    <div class="col-9 d-flex flex-column justify-content-center">
+    <div class="col-9 px-0 d-flex flex-column justify-content-center">
         <a [routerLink]="['/edit', ]"
            [queryParams]="{from: mode, id: title.id}">
             <h2 class="text-primary text-center text-full-wrap mb-1">{{title.name}}</h2>
@@ -16,11 +16,11 @@
             <div class="px-1"><span class="text-secondary">Дата:</span> {{title.date | ngbDate}}</div>
             <div class="px-1"><span class="text-secondary">Рейтинг:</span> {{title.rating}}</div>
         </div>
-        <div class="d-flex flex-wrap justify-content-around mb-2">
+        <div class="d-flex flex-wrap justify-content-around mb-2 gap-1">
             <div *ngFor="let tag of title.tags"
                  class="px-1 border border-primary">{{tag}}</div>
         </div>
-        <div class="d-flex flex-wrap">
+        <div class="d-flex flex-wrap gap-1">
             <a class="btn btn-primary flex-grow-2 me-2"
                [class.disabled]="!title.shiki_link"
                [href]="title.shiki_link">Страница на shikimori.one</a>
@@ -36,6 +36,15 @@
             </a>
         </div>
     </div>
-    <div class="col-1">
+    <div class="col-1 p-0 right-column gap-2">
+        <button class="btn px-2"
+                [ngClass]="{'btn-success': userVote=='yes', 'btn-outline-success': userVote!='yes'}"
+                (click)="voteClick('yes')">🞁</button>
+        <button class="btn px-2"
+                [ngClass]="{'btn-warning': userVote=='yes', 'btn-outline-warning': userVote!='ok'}"
+                (click)="voteClick('ok')">—</button>
+        <button class="btn px-2"
+                [ngClass]="{'btn-danger': userVote=='yes', 'btn-outline-danger': userVote!='no'}"
+                (click)="voteClick('no')">🞃</button>
     </div>
 </div>
