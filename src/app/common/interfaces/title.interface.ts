@@ -16,8 +16,10 @@ export interface TitleInfo {
 }
 export interface Vote {
   name: string;
-  value: 'yes'|'ok'|'no';
+  value: VoteValue;
 }
+
+export type VoteValue = 'yes'|'ok'|'no';
 
 export type TitleInfoWithId = TitleInfo & { id: string };
 
