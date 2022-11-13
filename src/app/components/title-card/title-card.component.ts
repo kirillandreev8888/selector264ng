@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TitleInfoWithId, TtileInfo } from 'src/app/common/interfaces/title.interface';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TitleInfoWithId, TitleInfo } from 'src/app/common/interfaces/title.interface';
 
 @Component({
   selector: 'titleCard',
@@ -9,7 +9,14 @@ import { TitleInfoWithId, TtileInfo } from 'src/app/common/interfaces/title.inte
 export class TitleCardComponent implements OnInit {
   @Input()  mode?: 'titles' | 'archive';
   @Input() title!: TitleInfoWithId;
+  @Input()  checked!: boolean;
+  @Output() checkedChange = new EventEmitter<boolean>();
   constructor() {}
 
   ngOnInit(): void {}
+
+  onCheck(){
+    this.checked = !this.checked;
+    this.checkedChange.emit(this.checked)
+  }
 }

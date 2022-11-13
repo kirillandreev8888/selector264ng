@@ -5,8 +5,9 @@ import {
 } from '@angular/fire/compat/database';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ToastrService } from 'ngx-toastr';
 import parse from 'node-html-parser';
-import { TtileInfo } from 'src/app/common/interfaces/title.interface';
+import { TitleInfo } from 'src/app/common/interfaces/title.interface';
 import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from './edit.service';
@@ -20,39 +21,56 @@ import { EditService } from './edit.service';
 export class EditComponent implements OnInit {
   mode: 'add' | 'edit' = this.activatedRoute.snapshot.data['mode'];
   id?: string = this.activatedRoute.snapshot.queryParams['id'];
-  from?: string = this.activatedRoute.snapshot.queryParams['from'];
+  from?: 'titles' | 'archive' =
+    this.activatedRoute.snapshot.queryParams['from'];
 
   constructor(
     private database: AngularFireDatabase,
+    private toastr: ToastrService,
     private editService: EditService,
     private globalSharedService: GlobalSharedService,
     private activatedRoute: ActivatedRoute,
   ) {}
   loadingMessage?: string;
-  title: TtileInfo = {
-    shiki_link:
-      // 'https://shikimori.one/animes/49918-boku-no-hero-academia-6th-season',
-      'https://shikimori.one/animes/z5114-fullmetal-alchemist-brotherhood',
+  title?: TitleInfo = {
+    // shiki_link:
+    // 'https://shikimori.one/animes/49918-boku-no-hero-academia-6th-season',
+    // 'https://shikimori.one/animes/z5114-fullmetal-alchemist-brotherhood',
     votes: [],
+    status: 'list',
   };
   ngOnInit(): void {
-    console.log(this.activatedRoute.snapshot.queryParams);
+    // console.log(this.activatedRoute.snapshot.queryParams);
     if (this.mode == 'edit' && this.id && this.from)
       (
         this.database.object(
           `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
-        ) as AngularFireObject<TtileInfo>
+        ) as AngularFireObject<TitleInfo>
       )
         .snapshotChanges()
         .pipe(untilDestroyed(this))
         .subscribe((title) => {
           if (!title) alert('Ошибка - неверный/уже удаленный id');
-          else this.title = title.payload.val()!;
+          else {
+            this.title = title.payload.val()!;
+          }
         });
   }
 
   async parseFrom(source: 'shikimori') {
-    if (this.title.shiki_link?.indexOf(source) !== -1) {
+    if (!this.title) {
+      this.showToastrError('Null title error');
+      return;
+    }
+    let link = '';
+    //определяем url, с которого парсим
+    if (source=='shikimori'){
+      if (!this.title?.shiki_link?.length && this.title)
+        this.title.shiki_link = await navigator.clipboard.readText()
+      link = this.title.shiki_link ? this.title.shiki_link : '';
+
+    }
+    if (link.indexOf(source) !== -1) {
       //подготовка
       const timeout = setTimeout(() => {
         if (this.loadingMessage == 'Загрузка...')
@@ -62,7 +80,7 @@ export class EditComponent implements OnInit {
       this.loadingMessage = 'Загрузка...';
       // await new Promise((resolve) => setTimeout(resolve, 5000));
       const data = await this.editService.getHtmlContent(
-        this.title.shiki_link!,
+        link
       );
       this.loadingMessage = 'Расшифровка...';
       const decipheredData = await data.text();
@@ -80,6 +98,10 @@ export class EditComponent implements OnInit {
   }
 
   async saveTitle() {
+    if (!this.title) {
+      this.showToastrError('Null title error');
+      return;
+    }
     if (this.mode == 'add') {
       await this.database
         .list(
@@ -91,20 +113,63 @@ export class EditComponent implements OnInit {
     } else if (this.mode == 'edit') {
       await this.database
         .object(
-          `/${this.globalSharedService.currentListOwner.value}/${
-            this.title.status == 'archive' ? 'archive' : 'titles'
-          }/${this.id}`,
+          `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
         )
         .set(this.title);
     }
     window.history.back();
   }
 
-  deleteTitle() {
+  async deleteTitle() {
+    if (!this.title) {
+      this.showToastrError('Null title error');
+      return;
+    }
+    await this.database
+      .object(
+        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
+      )
+      .remove();
     window.history.back();
   }
 
-  archiveTitle() {
+  async archiveTitle() {
+    if (!this.title) {
+      this.showToastrError('Null title error');
+      return;
+    }
+    //сначала добавляем в архив
+    this.title.status = 'archive';
+    await this.database
+      .list(`/${this.globalSharedService.currentListOwner.value}/archive/`)
+      .push(this.title);
+    //потом удаляем из списка
+    await this.database
+      .object(
+        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
+      )
+      .remove();
     window.history.back();
+  }
+
+  async moveTitleToList() {
+    if (!this.title) {
+      this.showToastrError('Null title error');
+      return;
+    }
+    this.title.status = 'list';
+    await this.database
+      .object(
+        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
+      )
+      .set(this.title);
+    window.history.back();
+  }
+
+  showToastrError(error: string): void {
+    this.toastr.error(error, undefined, {
+      timeOut: 3000,
+      closeButton: true,
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 
-export interface TtileInfo {
+export interface TitleInfo {
   name?: string;
   pic?: string;
   shiki_link?: string;
@@ -19,7 +19,7 @@ export interface Vote {
   value: 'yes'|'ok'|'no';
 }
 
-export type TitleInfoWithId = TtileInfo & { id: string };
+export type TitleInfoWithId = TitleInfo & { id: string };
 
 export interface UserInfo {
   userName: string;

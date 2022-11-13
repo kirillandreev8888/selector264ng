@@ -1,8 +1,9 @@
-<div
-     class="title-card container-fluid row flex-wrap justify-content-center align-items-center border border-muted rounded p-2">
-    <div class="col-1 image-container">
+<div [id]="title.id"
+     class="title-card container-fluid row ms-0 me-0 flex-wrap justify-content-center align-items-center border border-muted rounded p-2">
+    <div class="col-1 image-container"
+         (click)="onCheck()"
+         [class.checked]="checked">
         <img [src]="title.pic"
-             height="150px"
              alt="img">
     </div>
     <div class="col-9 d-flex flex-column justify-content-center">
