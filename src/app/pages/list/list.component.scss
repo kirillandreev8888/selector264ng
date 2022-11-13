@@ -1,0 +1,63 @@
+.list-component {
+  position: relative;
+  align-items: flex-start;
+
+  .list-container {
+    flex-grow: 2;
+
+    .list {
+      max-width: 950px;
+
+      @media screen and (min-width: 1500px) {
+        max-width: 75%;
+      }
+
+    }
+  }
+
+  .right-menu {
+    min-height: 100%;
+    min-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    position: sticky;
+    top: 0;
+
+    .content {
+
+      img,
+      h4 {
+        max-width: 150px;
+      }
+    }
+
+    //для широкого экрана меню всегда открыто и кнопки выдвыижения нет
+    @media screen and (min-width: 800px) {
+      .content {
+        display: block;
+      }
+
+      .open-button {
+        display: none;
+      }
+
+    }
+
+    //на узком экране меню выдвигается кнопкой и оно абсолютно позиционировано
+    @media screen and (max-width: 800px) {
+      .content {
+        background-color: white;
+        width: fit-content;
+        position: absolute;
+        top: 35px;
+        right: 0px;
+
+        button {
+          width: max-content;
+        }
+      }
+    }
+  }
+}

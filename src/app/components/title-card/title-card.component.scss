@@ -16,29 +16,68 @@
 }
 
 ::ng-deep {
+
   //первый на зуме сдвинут вниз
-  .title-card-container:first-child .image-container img:hover {
+  .title-card-container:first-child .image-container:hover {
     transform: translate(0, 45px) scale(2.5) !important;
   }
 
   //последний на зуме сдвинут вверх
-  .title-card-container:not(:first-child):last-child .image-container img:hover {
+  .title-card-container:not(:first-child):last-child .image-container:hover {
     transform: translate(0, -75px) scale(2.5) !important;
   }
 }
 
 
 .image-container {
-  min-width: fit-content;
+  //переменная
+  $transition: all 0.15s;
+  border-radius: 5px;
+  overflow: hidden;
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+  transition: $transition;
+
+  &.checked {
+    &::before {
+      content: '✓';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--bs-primary);
+      opacity: 0.7;
+      color: white;
+      text-align: center;
+      font-size: 5em;
+    }
+  }
+
+  &:hover {
+    z-index: 1;
+    transition: $transition;
+    transform: scale(2.5);
+  }
 
   img {
-    $transition: all 0.15s;
-    transition: $transition;
+    width: 110px;
+    height: auto;
+  }
 
-    &:hover {
-      transform: scale(2.5);
-      transition: $transition;
-    }
+  span {
+    user-select: none;
+    color: white;
+    position: absolute;
+    text-align: center;
+    display: block;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bs-primary);
+    opacity: 0.7;
+    font-size: 5em;
   }
 }
 

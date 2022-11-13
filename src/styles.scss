@@ -5,6 +5,12 @@
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 /* ng-select */
 @import "~@ng-select/ng-select/themes/default.theme.css";
+/*toastr */
+@import "~ngx-toastr/toastr";
+
+.w-fit{
+  width: fit-content;
+}
 
 //увеличить размер шрифта на i*10%
 @for $i from 5 through 200 {

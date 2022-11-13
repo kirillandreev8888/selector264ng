@@ -11,23 +11,23 @@
     </div>
     <div class="col-4 d-flex flex-column justify-content-center">
         <img class="w-100"
-             *ngIf="title.pic"
-             [src]="title.pic"
+             *ngIf="title?.pic"
+             [src]="title?.pic"
              alt="No pic yet">
         <img class="w-100"
-             *ngIf="!title.pic"
+             *ngIf="!title?.pic"
              [src]="'/assets/logo.svg'"
              alt="No pic yet">
     </div>
     <div class="col-8">
-        <h1 class="text-center">{{title.name ? title.name : 'Введите название'}}</h1>
+        <h1 class="text-center">{{title?.name ? title?.name : 'Введите название'}}</h1>
         <!-- название -->
         <div class="mb-3">
             <input type="text"
                    class="form-control"
                    id="input-name"
                    placeholder="Введите название"
-                   [(ngModel)]="title.name">
+                   [(ngModel)]="title && title.name">
         </div>
         <!-- ссылка на просмотр -->
         <div class="input-group mb-3">
@@ -38,7 +38,7 @@
             <input type="text"
                    class="form-control"
                    placeholder="Ссылка на просмотр"
-                   [(ngModel)]="title.watch_link">
+                   [(ngModel)]="title && title.watch_link">
         </div>
         <!-- ссылка на шикимори -->
         <div class="input-group mb-2">
@@ -48,7 +48,7 @@
             <input type="text"
                    class="form-control"
                    placeholder="Ссылка на шикимори"
-                   [(ngModel)]="title.shiki_link">
+                   [(ngModel)]="title && title.shiki_link">
         </div>
         <div class="form-text mb-3">
             Парсер в бездействии находится в "спящем режиме". Если он не отвечает, необходимо подождать, пока он
@@ -60,7 +60,7 @@
                    class="form-control"
                    id="input-torrent_link"
                    placeholder="Ссылка на торрент"
-                   [(ngModel)]="title.torrent_link">
+                   [(ngModel)]="title && title.torrent_link">
         </div>
         <!-- количество серий -->
         <div class="mb-3">
@@ -68,13 +68,13 @@
                    class="form-control"
                    id="input-episodes"
                    placeholder="Введите количество серий"
-                   [(ngModel)]="title.episodes">
+                   [(ngModel)]="title && title.episodes">
         </div>
         <!-- дата -->
         <div class="input-group mb-3">
             <input class="form-control"
                    name="dp"
-                   [(ngModel)]="title.date"
+                   [(ngModel)]="title && title.date"
                    ngbDatepicker
                    #d="ngbDatepicker" />
             <button class="btn btn-outline-secondary bi bi-calendar3"
@@ -83,7 +83,7 @@
         </div>
         <!-- теги -->
         <div class="mb-3">
-            <ng-select [(ngModel)]="title.tags"
+            <ng-select [(ngModel)]="title && title.tags"
                        placeholder="Введите теги"
                        [addTag]="true"
                        [multiple]="true"
@@ -97,17 +97,20 @@
                    class="form-control"
                    id="input-rating"
                    placeholder="Рейтинг"
-                   [(ngModel)]="title.rating">
+                   [(ngModel)]="title && title.rating">
         </div>
         <!-- категория -->
-        <h6 class="text-center text-secondary">Категория</h6>
-        <select class="form-select mb-3"
-                id="select-status"
-                [(ngModel)]="title.status">
-            <option value="list">Основной список</option>
-            <option value="ongoing">Не вышло</option>
-            <option value="archive">архив</option>
-        </select>
+        <ng-container *ngIf="title?.status!='archive' && from!='archive'">
+            <h6 class="text-center text-secondary">Категория</h6>
+            <select class="form-select mb-3"
+                    id="select-status"
+                    [(ngModel)]="title && title.status">
+                <option value="list">Основной список</option>
+                <option value="ongoing">Не вышло</option>
+                <option *ngIf="mode=='add'"
+                        value="archive">Архив</option>
+            </select>
+        </ng-container>
         <div *ngIf="mode=='add'"
              class="container-fluid d-flex justify-content-center">
             <button class="btn btn-success"
@@ -117,8 +120,12 @@
              class="container-fluid d-flex flex-wrap justify-content-center gap-2">
             <button class="btn btn-danger"
                     (click)="deleteTitle()">Удалить</button>
-            <button class="btn btn-primary"
+            <button *ngIf="title?.status!='archive' && from!='archive'"
+                    class="btn btn-secondary"
                     (click)="archiveTitle()">Просмотрено</button>
+            <button *ngIf="title?.status=='ongoing'"
+                    class="btn btn-primary"
+                    (click)="moveTitleToList()">Вышло</button>
             <button class="btn btn-success"
                     (click)="saveTitle()">Сохранить изменения</button>
         </div>

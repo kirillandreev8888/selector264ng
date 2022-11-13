@@ -16,6 +16,7 @@ import { EditComponent } from './pages/edit/edit.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { NgbDatePipe } from './components/pipes/ngbdate.pipe';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent, NavbarComponent, ListComponent, TitleCardComponent, EditComponent, NgbDatePipe],
@@ -29,7 +30,8 @@ import { NgbDatePipe } from './components/pipes/ngbdate.pipe';
     AngularFireModule.initializeApp(FIREBASE_CONFIG),
     AngularFireDatabaseModule,
     NgSelectModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

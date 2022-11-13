@@ -1,8 +1,8 @@
-import { TtileInfo } from '../interfaces/title.interface';
-import { HTMLElement, parse } from 'node-html-parser';
-import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { TitleInfo } from '../interfaces/title.interface';
+import { HTMLElement } from 'node-html-parser';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-export const parseFromShikimori = (root: HTMLElement, title: TtileInfo) => {
+export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
   //картинка
   title.pic = root.querySelector('.c-poster center img')?.getAttribute('src');
   //имя
