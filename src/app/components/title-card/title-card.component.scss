@@ -1,8 +1,13 @@
 .title-card {
+  max-width: 100%;
   min-width: min-content;
   flex-wrap: nowrap;
+  display: flex;
   @media screen and (max-width: 700px) {
     flex-direction: column !important;
+    .text-enlarge-15{
+      font-size: 1em;
+    }
   }
 
   a {
@@ -18,10 +23,31 @@
     width: max-content;
     display: flex;
     flex-flow: column wrap;
+
     @media screen and (max-width: 700px) {
       flex-direction: row !important;
     }
 
+    button {
+      position: relative;
+      width: 2.5em;
+      text-align: center;
+      &.top-votes {
+        &::before {
+          content: '決';
+          color: var(--bs-white);
+          $color: var(--bs-success);
+          font-weight: bold;
+          text-shadow: 1px 0 1px $color,
+            0 1px 1px $color,
+            -1px 0 1px $color,
+            0 -1px 1px $color;
+          position: absolute;
+          top: -0.5em;
+          right: -0.5em;
+        }
+      }
+    }
   }
 }
 
@@ -80,6 +106,7 @@
     height: auto;
   }
 }
+
 //TODO убрать подчеркивание
 .icon-mimic {
   position: relative;
