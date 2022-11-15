@@ -7,7 +7,11 @@ import { BehaviorSubject } from 'rxjs';
 export class GlobalSharedService {
   constructor() {}
 
-  currentUser = new BehaviorSubject<string>( localStorage.getItem('currentUser') || 'Макс');
-  currentListOwner = new BehaviorSubject<string>('test')
-    // localStorage.getItem('currentListOwner') || 'ker264';
+  currentUser = new BehaviorSubject<string>(
+    localStorage.getItem('currentUser') || 'Макс',
+  );
+  currentListOwner = new BehaviorSubject<string>(
+    // localStorage.getItem('currentListOwner') || 'ker264',
+    'test'
+  );
 }

@@ -8,7 +8,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ToastrService } from 'ngx-toastr';
 import parse from 'node-html-parser';
 import { TitleInfo } from 'src/app/common/interfaces/title.interface';
-import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
+import {
+  parseFromJutsu,
+  parseFromShikimori,
+} from 'src/app/common/utils/parse.utils';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from './edit.service';
 
@@ -57,18 +60,21 @@ export class EditComponent implements OnInit {
         });
   }
 
-  async parseFrom(source: 'shikimori') {
+  async parseFrom(source: 'shikimori' | 'jut.su') {
     if (!this.title) {
       this.showToastrError('Null title error');
       return;
     }
     let link = '';
     //определяем url, с которого парсим
-    if (source=='shikimori'){
+    if (source == 'shikimori') {
       if (!this.title?.shiki_link?.length && this.title)
-        this.title.shiki_link = await navigator.clipboard.readText()
+        this.title.shiki_link = await navigator.clipboard.readText();
       link = this.title.shiki_link ? this.title.shiki_link : '';
-
+    } else if (source == 'jut.su') {
+      if (!this.title?.watch_link?.length && this.title)
+        this.title.watch_link = await navigator.clipboard.readText();
+      link = this.title.watch_link ? this.title.watch_link : '';
     }
     if (link.indexOf(source) !== -1) {
       //подготовка
@@ -79,17 +85,23 @@ export class EditComponent implements OnInit {
       }, 3000);
       this.loadingMessage = 'Загрузка...';
       // await new Promise((resolve) => setTimeout(resolve, 5000));
-      const data = await this.editService.getHtmlContent(
-        link
-      );
-      this.loadingMessage = 'Расшифровка...';
-      const decipheredData = await data.text();
+      let decipheredData: string;
+      if (source != 'jut.su') {
+        const data = await this.editService.getHtmlContent(link);
+        this.loadingMessage = 'Расшифровка...';
+        decipheredData = await data.text();
+      } else {
+        decipheredData = await this.editService.getHtmlWindows1251Content(link);
+      }
       this.loadingMessage = 'Обработка...';
       const root = parse(decipheredData);
       //вызываем нужный парсер
       switch (source) {
         case 'shikimori':
           parseFromShikimori(root, this.title);
+          break;
+        case 'jut.su':
+          parseFromJutsu(root, this.title);
           break;
       }
       this.loadingMessage = undefined;

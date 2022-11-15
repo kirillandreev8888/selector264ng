@@ -32,9 +32,8 @@
         <!-- ссылка на просмотр -->
         <div class="input-group mb-3">
             <button class="btn btn-warning"
-                    type="button">animespirit</button>
-            <button class="btn btn-dark"
-                    type="button">jut.su</button>
+                    type="button"
+                    (click)="parseFrom('jut.su')">jut.su</button>
             <input type="text"
                    class="form-control"
                    placeholder="Ссылка на просмотр"
@@ -56,7 +55,9 @@
         </div>
         <!-- Ссылка на торрент -->
         <div class="input-group mb-3">
-            <span class="input-group-text bg-success text-white"><div class="icon-mimic"><span>µ</span></div></span>
+            <span class="input-group-text bg-success text-white">
+                <div class="icon-mimic"><span>µ</span></div>
+            </span>
             <input type="text"
                    class="form-control"
                    id="input-torrent_link"

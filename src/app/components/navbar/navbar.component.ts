@@ -17,9 +17,11 @@ export class NavbarComponent implements OnInit {
 
 
   setListOwner(listOwner: string) {
+    localStorage.setItem('currentListOwner', listOwner);
     this.globalSharedService.currentListOwner.next(listOwner);
   }
   setUser(user: string) {
+    localStorage.setItem('currentUser', user);
     this.globalSharedService.currentUser.next(user);
   }
   constructor(

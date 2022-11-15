@@ -36,7 +36,11 @@ export class TitleCardComponent implements OnInit {
   topVotesNumber = 0;
 
   ngOnInit(): void {
-    this.countVotes();
+    this.globalSharedService.currentUser
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.countVotes();
+      });
   }
 
   //обработка голосов
