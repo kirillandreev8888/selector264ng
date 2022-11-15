@@ -4,7 +4,7 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
   //картинка
-  title.pic = root.querySelector('.c-poster center img')?.getAttribute('src');
+  title.pic = root.querySelector('.c-poster img')?.getAttribute('src');
   //имя
   title.name = root.querySelector('h1')?.innerHTML.split('<span')?.[0];
   //статус
@@ -17,10 +17,9 @@ export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
   let keys = root.querySelectorAll('.line-container .line .key');
   for (let key of keys)
     if (key.textContent.includes('Эпизоды')) {
-      title.episodes = key.nextElementSibling.innerText?.replace(
-        /[^0-9?//]/g,
-        ' ',
-      ).trim();
+      title.episodes = key.nextElementSibling.innerText
+        ?.replace(/[^0-9?//]/g, ' ')
+        .trim();
     }
   //дата
   for (let key of keys)
@@ -28,6 +27,7 @@ export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
       const value = key.nextElementSibling.lastChild as HTMLElement;
       let dateString =
         value.nodeType == 1 ? value.getAttribute('title')! : value.rawText;
+      console.log(dateString)
       title.date = parseDateFromShikimori(dateString);
     }
   //теги
@@ -40,7 +40,7 @@ export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
   if (!isNaN(rating))
     title.rating = Number(root.querySelector('.score-value')?.innerText);
 };
-
+//TODO добавить в парсеры сброс тайтла
 const parseDateFromShikimori = (dateString: string): NgbDateStruct => {
   // берем только 1 часть (начало выпуска), разделяем на массив символосочетаний
   let syms = dateString
@@ -82,4 +82,22 @@ const parseDateFromShikimori = (dateString: string): NgbDateStruct => {
     month: month ? month : 6,
     year: year ? year : 2014,
   };
+};
+
+export const parseFromJutsu = (root: HTMLElement, title: TitleInfo) => {
+  const str = root.querySelector('.all_anime_title')?.getAttribute('style');
+  title.pic = str?.substring(str.indexOf('(') + 2, str.indexOf(')') - 1);
+  let newName = root.querySelector('h1')?.innerHTML;
+  console.log(root.querySelector('h1'))
+  newName = newName
+    ?.replace('Смотреть ', '')
+    .replace(' все серии', '')
+    .replace(' и сезоны', '');
+  title.name = newName;
+  const newStat = root.querySelector('.under_video_additional')?.innerHTML;
+  if (newStat?.indexOf('онгоинг') === -1) {
+    title.status = 'list';
+  } else {
+    title.status = 'ongoing';
+  }
 };

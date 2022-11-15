@@ -18,4 +18,12 @@ export class EditService {
   public getHtmlContent(url: string): Promise<Response> {
     return fetch(PROXY_URL + url);
   }
+  public getHtmlWindows1251Content(url: string): Promise<string> {
+    return fetch(PROXY_URL + url)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        let html = new TextDecoder('windows-1251').decode(buffer);
+        return new Promise((resolve) => resolve(html));
+      });
+  }
 }
