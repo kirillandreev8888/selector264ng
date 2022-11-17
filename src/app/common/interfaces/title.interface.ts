@@ -4,7 +4,7 @@ export interface TitleInfo {
   name?: string;
   pic?: string;
   shiki_link?: string;
-  status?: 'list' | 'ongoing' | 'archive';
+  status?: TitleStatus;
   votes?: Vote[];
   watch_link?: string;
   torrent_link?: string;
@@ -18,6 +18,8 @@ export interface Vote {
   name: string;
   value: VoteValue;
 }
+export type TitleStatus = 'list' | 'ongoing' | 'archive';
+export type TitlePath = 'archive' | 'titles';
 
 export type VoteValue = 'yes'|'ok'|'no';
 
