@@ -7,7 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ToastrService } from 'ngx-toastr';
 import parse from 'node-html-parser';
-import { TitleInfo } from 'src/app/common/interfaces/title.interface';
+import {
+  TitleInfo,
+  TitlePath,
+} from 'src/app/common/interfaces/title.interface';
 import {
   parseFromJutsu,
   parseFromShikimori,
@@ -24,8 +27,7 @@ import { EditService } from './edit.service';
 export class EditComponent implements OnInit {
   mode: 'add' | 'edit' = this.activatedRoute.snapshot.data['mode'];
   id?: string = this.activatedRoute.snapshot.queryParams['id'];
-  from?: 'titles' | 'archive' =
-    this.activatedRoute.snapshot.queryParams['from'];
+  from?: TitlePath = this.activatedRoute.snapshot.queryParams['from'];
 
   constructor(
     private database: AngularFireDatabase,
@@ -117,66 +119,37 @@ export class EditComponent implements OnInit {
       return;
     }
     if (this.mode == 'add') {
-      await this.database
-        .list(
-          `/${this.globalSharedService.currentListOwner.value}/${
-            this.title.status == 'archive' ? 'archive' : 'titles'
-          }/`,
-        )
-        .push(this.title);
-    } else if (this.mode == 'edit') {
-      await this.database
-        .object(
-          `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
-        )
-        .set(this.title);
+      await this.editService.addTitle(this.title);
+    } else if (this.mode == 'edit' && this.from && this.id) {
+      await this.editService.updateTitle(this.title, this.from, this.id);
     }
     window.history.back();
   }
 
   async deleteTitle() {
-    if (!this.title) {
+    if (!this.title || !this.from || !this.id) {
       this.showToastrError('Null title error');
       return;
     }
-    await this.database
-      .object(
-        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
-      )
-      .remove();
+    await this.editService.deleteTitle(this.from, this.id);
     window.history.back();
   }
 
   async archiveTitle() {
-    if (!this.title) {
+    if (!this.title || !this.from || !this.id) {
       this.showToastrError('Null title error');
       return;
     }
-    //сначала добавляем в архив
-    this.title.status = 'archive';
-    await this.database
-      .list(`/${this.globalSharedService.currentListOwner.value}/archive/`)
-      .push(this.title);
-    //потом удаляем из списка
-    await this.database
-      .object(
-        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
-      )
-      .remove();
+    await this.editService.moveTitle(this.title, this.id, 'archive', this.from);
     window.history.back();
   }
 
   async moveTitleToList() {
-    if (!this.title) {
+    if (!this.title || !this.from || !this.id) {
       this.showToastrError('Null title error');
       return;
     }
-    this.title.status = 'list';
-    await this.database
-      .object(
-        `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
-      )
-      .set(this.title);
+    await this.editService.moveTitle(this.title, this.id, 'list');
     window.history.back();
   }
 

@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import {
   TitleInfoWithId,
   TitleInfo,
+  TitlePath,
 } from 'src/app/common/interfaces/title.interface';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 
@@ -27,7 +28,7 @@ export class ListComponent implements OnInit {
   /** тест */
   test = undefined;
   /** режим работы листа по наву - список/архив */
-  mode: 'titles' | 'archive' = this.activatedRoute.snapshot.data['mode'];
+  mode: TitlePath = this.activatedRoute.snapshot.data['mode'];
   /** режим работы листа по вкладке - вышло/не вышло */
   submode?: 'list' | 'ongoing' = this.activatedRoute.snapshot.data['submode'];
   /** список тайтлов */
@@ -110,6 +111,6 @@ export class ListComponent implements OnInit {
 
   /** начать обновление списка онгоингов */
   initiateOngoingUpdate(){
-    
+
   }
 }
