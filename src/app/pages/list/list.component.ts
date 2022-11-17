@@ -107,4 +107,9 @@ export class ListComponent implements OnInit {
       });
     }
   }
+
+  /** начать обновление списка онгоингов */
+  initiateOngoingUpdate(){
+    
+  }
 }
