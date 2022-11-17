@@ -85,14 +85,16 @@ export class EditComponent implements OnInit {
       }, 3000);
       this.loadingMessage = 'Загрузка...';
       // await new Promise((resolve) => setTimeout(resolve, 5000));
-      let decipheredData: string;
-      if (source != 'jut.su') {
-        const data = await this.editService.getHtmlContent(link);
-        this.loadingMessage = 'Расшифровка...';
-        decipheredData = await data.text();
-      } else {
-        decipheredData = await this.editService.getHtmlWindows1251Content(link);
-      }
+      let decipheredData =
+        source == 'jut.su'
+          ? await this.editService.getHtmlWindows1251Content(
+              link,
+              (state) => (this.loadingMessage = state),
+            )
+          : await this.editService.getHtmlContent(
+              link,
+              (state) => (this.loadingMessage = state),
+            );
       this.loadingMessage = 'Обработка...';
       const root = parse(decipheredData);
       //вызываем нужный парсер

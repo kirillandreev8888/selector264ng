@@ -15,12 +15,24 @@ export class EditService {
 
   constructor(private http: HttpClient) {}
 
-  public getHtmlContent(url: string): Promise<Response> {
-    return fetch(PROXY_URL + url);
+  public getHtmlContent(
+    url: string,
+    emitState?: (state: string) => {},
+  ): Promise<string> {
+    return fetch(PROXY_URL + url).then((data) => {
+      if (emitState) emitState('Расшифровка...');
+      return data.text();
+    });
   }
-  public getHtmlWindows1251Content(url: string): Promise<string> {
+  public getHtmlWindows1251Content(
+    url: string,
+    emitState?: (state: string) => {},
+  ): Promise<string> {
     return fetch(PROXY_URL + url)
-      .then((response) => response.arrayBuffer())
+      .then((response) => {
+        if (emitState) emitState('Расшифровка...');
+        return response.arrayBuffer();
+      })
       .then((buffer) => {
         let html = new TextDecoder('windows-1251').decode(buffer);
         return new Promise((resolve) => resolve(html));
