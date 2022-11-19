@@ -9,18 +9,20 @@
     <div class="px-0 d-flex flex-grow-1 flex-column justify-content-center">
         <a [routerLink]="['/edit', ]"
            [queryParams]="{from: mode, id: title.id}">
-            <h2 class="text-primary text-center text-full-wrap mb-1">{{title.name}}</h2>
+            <h2 class="text-primary text-center text-full-wrap mb-1 text-decoration-none"><span>{{title.name}}</span>
+                <span *ngIf="title.status == 'ongoing' && !title.episodes?.length"
+                      class="px-2 border border-danger text-danger fs-6 anounce"><span>анонс</span></span></h2>
         </a>
-        <div class="d-flex flex-wrap justify-content-around mb-2 text-enlarge-15">
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-2 text-enlarge-15">
             <div *ngIf="title.episodes?.length"
                  class="px-1"><span class="text-secondary">Серии:</span> {{title.episodes}}</div>
-            <span *ngIf="title.status == 'ongoing' && !title.episodes?.length"
-                  class="px-2 border border-danger text-danger">анонс</span>
 
-            <div *ngIf="title.date && title.date.year!=9999" class="px-1"><span class="text-secondary">Дата:</span> {{title.date | ngbDate}}</div>
-            <div *ngIf="title.rating" class="px-1"><span class="text-secondary">Рейтинг:</span> {{title.rating}}</div>
+            <div *ngIf="title.date && title.date.year!=9999"
+                 class="px-1"><span class="text-secondary">Дата:</span> {{title.date | ngbDate}}</div>
+            <div *ngIf="title.rating"
+                 class="px-1"><span class="text-secondary">Рейтинг:</span> {{title.rating}}</div>
         </div>
-        <div class="d-flex flex-wrap justify-content-around mb-2 gap-1">
+        <div class="d-flex flex-wrap justify-content-center mb-2 gap-2">
             <div *ngFor="let tag of title.tags"
                  class="px-1 border border-primary">{{tag}}</div>
         </div>
@@ -33,7 +35,7 @@
                [class.disabled]="!title.watch_link"
                [href]="title.watch_link">Смотреть</a>
             <a class="btn flex-grow-1 py-0 d-flex justify-content-center align-items-center"
-               [ngClass]="title.watch_link ? 'btn-success': 'btn-outline-success'"
+               [ngClass]="title.torrent_link ? 'btn-success': 'btn-outline-success'"
                [class.disabled]="!title.torrent_link"
                [href]="title.torrent_link">
                 <div class="icon-mimic"><span>µ</span></div>

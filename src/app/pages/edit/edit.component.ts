@@ -46,7 +46,7 @@ export class EditComponent implements OnInit {
   };
   ngOnInit(): void {
     // console.log(this.activatedRoute.snapshot.queryParams);
-    if (this.mode == 'edit' && this.id && this.from)
+    if (this.mode == 'edit' && this.id && this.from) {
       (
         this.database.object(
           `/${this.globalSharedService.currentListOwner.value}/${this.from}/${this.id}`,
@@ -60,6 +60,15 @@ export class EditComponent implements OnInit {
             this.title = title.payload.val()!;
           }
         });
+    }
+    if (this.mode == 'add') {
+      const query =
+        this.activatedRoute.snapshot.queryParams['parseFromShikimori'];
+      if (query && typeof query == 'string' && query.includes('shikimori')) {
+        if (this.title) this.title.shiki_link = query;
+        this.parseFrom('shikimori');
+      }
+    }
   }
 
   async parseFrom(source: 'shikimori' | 'jut.su') {
@@ -115,11 +124,27 @@ export class EditComponent implements OnInit {
     } else alert('Неправильная ссылка');
   }
 
-  cleanTitle(){
+  cleanTitle() {
     delete this.title?.episodes;
     delete this.title?.date;
     delete this.title?.tags;
     delete this.title?.rating;
+  }
+
+  /** проверить валидость поля рейтинг и исправить в случае ошибки */
+  checkAndFixRating() {
+    if (this.title?.rating && isNaN(Number(this.title?.rating))) {
+      this.title.rating = 0;
+      return;
+    }
+    if (this.title?.rating && this.title.rating < 0) {
+      this.title.rating = 0;
+      return;
+    }
+    if (this.title?.rating && this.title.rating > 10) {
+      this.title.rating = 10;
+      return;
+    }
   }
 
   async saveTitle() {

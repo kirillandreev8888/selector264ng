@@ -11,7 +11,7 @@ export class GlobalSharedService {
     localStorage.getItem('currentUser') || 'Макс',
   );
   currentListOwner = new BehaviorSubject<string>(
-    // localStorage.getItem('currentListOwner') || 'ker264',
-    'test'
+    localStorage.getItem('currentListOwner') || 'ker264',
+    // 'test'
   );
 }

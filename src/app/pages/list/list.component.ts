@@ -49,7 +49,7 @@ export class ListComponent implements OnInit {
     cameOutList: string[];
   };
   /** тип сортировки */
-  sort: 'add' | 'release' =
+  sort: 'add' | 'release' | 'votes' | 'rating' =
     <'add' | 'release'>localStorage.getItem('sort') || 'add';
   constructor(
     private activatedRoute: ActivatedRoute,
