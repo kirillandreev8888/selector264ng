@@ -17,13 +17,26 @@
 
   .right-menu {
     min-height: 100%;
-    min-width: fit-content;
+    min-width: max-content;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
     position: sticky;
     top: 0;
+
+    .br-rt-0{
+      border-top-right-radius: 0;
+    }
+    .br-rb-0{
+      border-bottom-right-radius: 0;
+    }
+    .br-lt-0{
+      border-top-left-radius: 0;
+    }
+    .br-lb-0{
+      border-bottom-left-radius: 0;
+    }
 
     .content {
 

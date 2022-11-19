@@ -37,7 +37,7 @@
              #collapse="ngbCollapse"
              [(ngbCollapse)]="!rightMenuOpen"
              [horizontal]="true">
-            <div class="btn-group mb-2"
+            <div class="btn-group d-flex w-100"
                  role="group">
                 <input type="radio"
                        class="btn-check"
@@ -46,18 +46,40 @@
                        [value]="'add'"
                        [(ngModel)]="sort"
                        (ngModelChange)="saveSortMode()">
-                <label class="btn btn-outline-primary"
+                <label class="btn btn-outline-primary br-rt-0 br-rb-0 br-lb-0"
                        for="sort-radio-1">Добавление</label>
 
                 <input type="radio"
                        class="btn-check"
                        name="sort-radio"
                        id="sort-radio-2"
-                       [value]="'group'"
+                       [value]="'release'"
                        [(ngModel)]="sort"
                        (ngModelChange)="saveSortMode()">
-                <label class="btn btn-outline-primary"
+                <label class="btn btn-outline-primary br-lt-0 br-lb-0 br-rb-0"
                        for="sort-radio-2">Выход</label>
+            </div>
+            <div class="btn-group d-flex mb-2 w-100"
+                 role="group">
+                <input type="radio"
+                       class="btn-check"
+                       name="sort-radio"
+                       id="sort-radio-3"
+                       [value]="'votes'"
+                       [(ngModel)]="sort"
+                       (ngModelChange)="saveSortMode()">
+                <label class="btn btn-outline-primary br-rt-0 br-rb-0 br-lt-0"
+                       for="sort-radio-3">Голоса</label>
+
+                <input type="radio"
+                       class="btn-check"
+                       name="sort-radio"
+                       id="sort-radio-4"
+                       [value]="'rating'"
+                       [(ngModel)]="sort"
+                       (ngModelChange)="saveSortMode()">
+                <label class="btn btn-outline-primary br-lt-0 br-lb-0 br-rt-0"
+                       for="sort-radio-4">Рейтинг</label>
             </div>
             <ng-container *ngIf="submode=='list'">
                 <button class="btn btn-success mb-2 w-100 d-block"

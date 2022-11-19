@@ -112,6 +112,9 @@
                        class="form-control"
                        id="input-rating"
                        placeholder="Рейтинг"
+                       min="0"
+                       max="10"
+                       (change)="checkAndFixRating()"
                        [(ngModel)]="title && title.rating">
             </div>
             <!-- категория -->

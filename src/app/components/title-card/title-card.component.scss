@@ -13,9 +13,20 @@
   a {
     text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
-      filter: brightness(80%);
+    span{
+      &:not(.anounce):hover {
+        text-decoration: underline;
+        filter: brightness(80%);
+      }
+      &.anounce{
+        font-weight: normal;
+        position: relative;
+        top: -0.2em;
+        span{
+          position: relative;
+          top: -0.1em;
+        }
+      }
     }
   }
 
