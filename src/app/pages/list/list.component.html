@@ -20,7 +20,7 @@
             </ul>
             <div>
                 <div class="mb-3 title-card-container"
-                     *ngFor="let title of titles">
+                     *ngFor="let title of titles | titlesSort : sort">
                     <titleCard [mode]="mode"
                                [title]="title"
                                [(checked)]="checkedTitles[title.id]"></titleCard>
@@ -31,14 +31,36 @@
     <div class="right-menu ms-2 p-2 flex-grow-0 flex-shrink-0"
          *ngIf="mode=='titles'"
          [class.opened]="rightMenuOpen">
-        <ng-container *ngIf="submode=='list'">
-            <button class="btn btn-secondary open-button"
-                    (click)="rightMenuOpen = !rightMenuOpen">{{rightMenuOpen ? '>' : '&lt;'}}</button>
-            <div class="content mt-3"
-                 #collapse="ngbCollapse"
-                 [(ngbCollapse)]="!rightMenuOpen"
-                 [horizontal]="true">
-                <button class="btn btn-success mb-2"
+        <button class="btn btn-secondary open-button"
+                (click)="rightMenuOpen = !rightMenuOpen">{{rightMenuOpen ? '>' : '&lt;'}}</button>
+        <div class="content mt-3 px-2"
+             #collapse="ngbCollapse"
+             [(ngbCollapse)]="!rightMenuOpen"
+             [horizontal]="true">
+            <div class="btn-group mb-2"
+                 role="group">
+                <input type="radio"
+                       class="btn-check"
+                       name="sort-radio"
+                       id="sort-radio-1"
+                       [value]="'add'"
+                       [(ngModel)]="sort"
+                       (ngModelChange)="saveSortMode()">
+                <label class="btn btn-outline-primary"
+                       for="sort-radio-1">Добавление</label>
+
+                <input type="radio"
+                       class="btn-check"
+                       name="sort-radio"
+                       id="sort-radio-2"
+                       [value]="'group'"
+                       [(ngModel)]="sort"
+                       (ngModelChange)="saveSortMode()">
+                <label class="btn btn-outline-primary"
+                       for="sort-radio-2">Выход</label>
+            </div>
+            <ng-container *ngIf="submode=='list'">
+                <button class="btn btn-success mb-2 w-100 d-block"
                         (click)="getRandomTitle()"><i class="bi bi-shuffle"></i> Случайный тайтл</button>
                 <div *ngIf="randomTitle && titles"
                      class="w-100 text-center">
@@ -48,33 +70,27 @@
                          alt="logo.jpg">
                     <h4 role="button">{{randomTitle.name}}</h4>
                 </div>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="submode=='ongoing'">
-            <button class="btn btn-secondary open-button"
-                    (click)="rightMenuOpen = !rightMenuOpen">{{rightMenuOpen ? '>' : '&lt;'}}</button>
-            <div class="content mt-3"
-                 #collapse="ngbCollapse"
-                 [(ngbCollapse)]="!rightMenuOpen"
-                 [horizontal]="true">
-                <button class="btn btn-success mb-2"
-                        (click)="initiateOngoingUpdate()"><i class="bi bi-arrow-clockwise"></i> Обновить данные об
-                    онгоингах</button>
+            </ng-container>
+            <ng-container *ngIf="submode=='ongoing'">
+                <button class="btn btn-success mb-2 d-block"
+                        (click)="initiateOngoingUpdate()"><i class="bi bi-arrow-clockwise"></i> Обновить
+                    онгоинги</button>
                 <div *ngIf="ongoingUpdateData">
                     <ngb-progressbar [showValue]="true"
                                      type="success"
                                      [value]="ongoingUpdateData.processed"
                                      [max]="ongoingUpdateData.total"></ngb-progressbar>
-                <div *ngIf="ongoingUpdateData.cameOutList.length">
-                    Вышло:
-                    <ul>
-                        <li *ngFor="let name of ongoingUpdateData.cameOutList">
-                            {{name}}
-                        </li>
-                    </ul>
+                    <div *ngIf="ongoingUpdateData.cameOutList.length">
+                        Вышло:
+                        <ul>
+                            <li *ngFor="let name of ongoingUpdateData.cameOutList">
+                                {{name}}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                </div>
-            </div>
-        </ng-container>
+            </ng-container>
+        </div>
+
     </div>
 </div>
