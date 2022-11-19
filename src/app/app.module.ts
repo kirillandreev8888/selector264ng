@@ -17,9 +17,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { NgbDatePipe } from './components/pipes/ngbdate.pipe';
 import { ToastrModule } from 'ngx-toastr';
+import { TitlesSortPipe } from './pages/list/titles-sort.pipe';
 
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, ListComponent, TitleCardComponent, EditComponent, NgbDatePipe],
+  declarations: [AppComponent, NavbarComponent, ListComponent, TitleCardComponent, EditComponent, NgbDatePipe, TitlesSortPipe],
   imports: [
     BrowserModule,
     AppRoutingModule,

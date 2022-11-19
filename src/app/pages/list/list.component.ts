@@ -48,6 +48,9 @@ export class ListComponent implements OnInit {
     processed: number;
     cameOutList: string[];
   };
+  /** тип сортировки */
+  sort: 'add' | 'release' =
+    <'add' | 'release'>localStorage.getItem('sort') || 'add';
   constructor(
     private activatedRoute: ActivatedRoute,
     private database: AngularFireDatabase,
@@ -95,6 +98,11 @@ export class ListComponent implements OnInit {
       });
   }
 
+  /** сохранить текущий выбранный режим сортировки в localStorage */
+  saveSortMode(){
+    localStorage.setItem('sort', this.sort);
+  }
+
   /** выбирает из списка тайтлов случайный и вставляет в правое меню */
   getRandomTitle() {
     let checkedTitles = Object.keys(this.checkedTitles).filter(
@@ -136,9 +144,12 @@ export class ListComponent implements OnInit {
         await this.editService.getHtmlContent(title.shiki_link!),
       );
       parseFromShikimori(root, title);
-      if (title.status != oldStatus) this.ongoingUpdateData.cameOutList.push(title.name ? title.name : 'Unnamed');
+      if (title.status != oldStatus)
+        this.ongoingUpdateData.cameOutList.push(
+          title.name ? title.name : 'Unnamed',
+        );
       let id = title.id;
-      delete (title as TitleInfo & {id?:string}).id;
+      delete (title as TitleInfo & { id?: string }).id;
       await this.editService.updateTitle(title, this.mode, id);
       this.ongoingUpdateData.processed++;
     }
