@@ -99,6 +99,8 @@ export class EditComponent implements OnInit {
             );
       this.loadingMessage = 'Обработка...';
       const root = parse(decipheredData);
+      //очищаем поля
+      this.cleanTitle();
       //вызываем нужный парсер
       switch (source) {
         case 'shikimori':
@@ -111,6 +113,13 @@ export class EditComponent implements OnInit {
       this.loadingMessage = undefined;
       clearTimeout(timeout);
     } else alert('Неправильная ссылка');
+  }
+
+  cleanTitle(){
+    delete this.title?.episodes;
+    delete this.title?.date;
+    delete this.title?.tags;
+    delete this.title?.rating;
   }
 
   async saveTitle() {
