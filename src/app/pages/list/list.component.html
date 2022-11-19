@@ -58,14 +58,21 @@
                  [(ngbCollapse)]="!rightMenuOpen"
                  [horizontal]="true">
                 <button class="btn btn-success mb-2"
-                        (click)="initiateOngoingUpdate()"><i class="bi bi-arrow-clockwise"></i> Обновить данные об онгоингах</button>
-                <div *ngIf="randomTitle && titles"
-                     class="w-100 text-center">
-                    <img role="button"
-                         width="100%"
-                         [src]="randomTitle.pic"
-                         alt="logo.jpg">
-                    <h4 role="button">{{randomTitle.name}}</h4>
+                        (click)="initiateOngoingUpdate()"><i class="bi bi-arrow-clockwise"></i> Обновить данные об
+                    онгоингах</button>
+                <div *ngIf="ongoingUpdateData">
+                    <ngb-progressbar [showValue]="true"
+                                     type="success"
+                                     [value]="ongoingUpdateData.processed"
+                                     [max]="ongoingUpdateData.total"></ngb-progressbar>
+                <div *ngIf="ongoingUpdateData.cameOutList.length">
+                    Вышло:
+                    <ul>
+                        <li *ngFor="let name of ongoingUpdateData.cameOutList">
+                            {{name}}
+                        </li>
+                    </ul>
+                </div>
                 </div>
             </div>
         </ng-container>

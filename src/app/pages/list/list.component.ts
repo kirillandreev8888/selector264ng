@@ -14,6 +14,9 @@ import {
   TitlePath,
 } from 'src/app/common/interfaces/title.interface';
 import { GlobalSharedService } from 'src/app/global.shared.service';
+import { EditService } from '../edit/edit.service';
+import parse from 'node-html-parser';
+import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
 
 @UntilDestroy()
 @Component({
@@ -39,11 +42,18 @@ export class ListComponent implements OnInit {
   randomTitle?: Partial<TitleInfoWithId>;
   /** список выбранных тайтлов для случайного выбора */
   checkedTitles: Record<string, boolean> = {};
+  /** объект работы с обновлением онгоингов */
+  ongoingUpdateData?: {
+    total: number;
+    processed: number;
+    cameOutList: string[];
+  };
   constructor(
     private activatedRoute: ActivatedRoute,
     private database: AngularFireDatabase,
     private toastr: ToastrService,
     private globalSharedService: GlobalSharedService,
+    private editService: EditService,
   ) {}
   ngOnInit(): void {
     // setInterval(()=>{
@@ -110,7 +120,27 @@ export class ListComponent implements OnInit {
   }
 
   /** начать обновление списка онгоингов */
-  initiateOngoingUpdate(){
-
+  async initiateOngoingUpdate() {
+    let titlesToUpdate = _.cloneDeep(this.titles).filter((title) =>
+      title.shiki_link?.includes('shikimori'),
+    );
+    if (!titlesToUpdate.length) return;
+    this.ongoingUpdateData = {
+      total: titlesToUpdate.length,
+      processed: 0,
+      cameOutList: [],
+    };
+    for (let title of titlesToUpdate) {
+      const oldStatus = title.status;
+      const root = parse(
+        await this.editService.getHtmlContent(title.shiki_link!),
+      );
+      parseFromShikimori(root, title);
+      if (title.status != oldStatus) this.ongoingUpdateData.cameOutList.push(title.name ? title.name : 'Unnamed');
+      let id = title.id;
+      delete (title as TitleInfo & {id?:string}).id;
+      await this.editService.updateTitle(title, this.mode, id);
+      this.ongoingUpdateData.processed++;
+    }
   }
 }

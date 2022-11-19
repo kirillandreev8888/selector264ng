@@ -27,11 +27,11 @@ export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
       const value = key.nextElementSibling.lastChild as HTMLElement;
       let dateString =
         value.nodeType == 1 ? value.getAttribute('title')! : value.rawText;
-      console.log(dateString)
+      // console.log(dateString)
       title.date = parseDateFromShikimori(dateString);
     }
   //теги
-  if (!title.tags) title.tags = [];
+  title.tags = [];
   root
     .querySelectorAll('.genre-ru')
     .forEach((tag) => title.tags?.push(tag.innerText));
@@ -80,7 +80,7 @@ const parseDateFromShikimori = (dateString: string): NgbDateStruct => {
   return {
     day: day ? day : 1,
     month: month ? month : 6,
-    year: year ? year : 2014,
+    year: year ? year : 9999,
   };
 };
 
@@ -88,7 +88,7 @@ export const parseFromJutsu = (root: HTMLElement, title: TitleInfo) => {
   const str = root.querySelector('.all_anime_title')?.getAttribute('style');
   title.pic = str?.substring(str.indexOf('(') + 2, str.indexOf(')') - 1);
   let newName = root.querySelector('h1')?.innerHTML;
-  console.log(root.querySelector('h1'))
+  // console.log(root.querySelector('h1'))
   newName = newName
     ?.replace('Смотреть ', '')
     .replace(' все серии', '')
