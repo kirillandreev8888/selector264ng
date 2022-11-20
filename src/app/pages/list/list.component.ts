@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import {
   TitleInfoWithId,
   TitleInfo,
@@ -17,6 +17,7 @@ import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from '../edit/edit.service';
 import parse from 'node-html-parser';
 import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
+import { Subscription } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -59,47 +60,42 @@ export class ListComponent implements OnInit {
     private editService: EditService,
   ) {}
   ngOnInit(): void {
-    // setInterval(()=>{
-    // if (this.container?.nativeElement?.offsetWidth)
-    //   this.width =this.container.nativeElement.offsetWidth;
-    // }, 35)
+    // подписываемся на список тайтлов через switchMap от субъекта пользователя
     this.globalSharedService.currentListOwner
-      .pipe(untilDestroyed(this))
-      .subscribe((currentListOwner) => {
-        (
-          this.database.object(
-            `/${currentListOwner}/${this.mode}`,
-          ) as AngularFireObject<Record<string, TitleInfo>>
-        )
-          .valueChanges()
-          .pipe(
-            untilDestroyed(this),
-            map((res) => {
-              const list: TitleInfoWithId[] = Object.keys(res!)
-                .map((id) => {
-                  return {
-                    id: id,
-                    ...res![id],
-                  };
-                })
-                .filter(
-                  (title) =>
-                    this.mode == 'archive' || title.status == this.submode,
-                );
-              // console.log(list);
-              return list;
-            }),
-          )
-          .subscribe((res) => {
-            this.randomTitle = undefined;
-            this.checkedTitles = {};
-            this.titles = res;
-          });
+      .pipe(
+        untilDestroyed(this),
+        switchMap((currentListOwner) =>
+          this.database
+            .list<TitleInfo>(`/${currentListOwner}/${this.mode}`)
+            //на самом деле это не снапшот
+            //снапшотами тут называется состояние объекта
+            //поэтому это не снапшот изменения, а подписка на изменение снапшота ¯\_(ツ)_/¯
+            .snapshotChanges()
+            .pipe(
+              untilDestroyed(this),
+              map((res) =>
+                res
+                  .map((snapshot) => ({
+                    id: snapshot.key!,
+                    ...snapshot.payload.val(),
+                  }))
+                  .filter(
+                    (title) =>
+                      this.mode == 'archive' || title.status == this.submode,
+                  ),
+              ),
+            ),
+        ),
+      )
+      .subscribe((res) => {
+        this.randomTitle = undefined;
+        this.checkedTitles = {};
+        this.titles = res;
       });
   }
 
   /** сохранить текущий выбранный режим сортировки в localStorage */
-  saveSortMode(){
+  saveSortMode() {
     localStorage.setItem('sort', this.sort);
   }
 
