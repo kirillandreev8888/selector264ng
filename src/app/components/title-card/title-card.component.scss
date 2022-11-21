@@ -18,15 +18,16 @@
         text-decoration: underline;
         filter: brightness(80%);
       }
-      &.anounce{
-        font-weight: normal;
-        position: relative;
-        top: -0.2em;
-        span{
-          position: relative;
-          top: -0.1em;
-        }
-      }
+    }
+  }
+
+  .anounce{
+    font-weight: normal;
+    position: relative;
+    top: -0.2em;
+    span{
+      position: relative;
+      top: -0.1em;
     }
   }
 
@@ -84,7 +85,6 @@
   //переменная
   $transition: all 0.15s;
   border-radius: 5px;
-  overflow: hidden;
   width: fit-content;
   height: fit-content;
   position: relative;

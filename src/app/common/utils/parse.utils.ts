@@ -1,6 +1,7 @@
 import { TitleInfo } from '../interfaces/title.interface';
 import { HTMLElement } from 'node-html-parser';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import * as _ from 'lodash';
 
 export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
   //картинка
@@ -100,4 +101,35 @@ export const parseFromJutsu = (root: HTMLElement, title: TitleInfo) => {
   } else {
     title.status = 'ongoing';
   }
+
+  try {
+    let episodes = root.querySelectorAll('a.the_hildi');
+    let seasons: Record<number, number> = {};
+    for (let episode of episodes) {
+      let a = episode.innerHTML.split('</i>')[0];
+      a = a.replace(/[^0-9]/g, '');
+      if (!isNaN(Number(a))) {
+        const b = Number(a);
+        if (!seasons[b]) seasons[b] = 1;
+        else seasons[b]++;
+      }
+    }
+    const extra = seasons[0];
+    delete seasons[0];
+    if (seasons[1])
+      title.episodes =
+        Object.keys(seasons)
+          .map((s) => `s${s}(${seasons[Number(s)]})`)
+          .join(', ') + (extra ? ` + ${extra}` : '');
+    else title.episodes = String(extra);
+
+    let tags = root
+      .querySelectorAll('.under_video_additional a')
+      .map((meta) => {
+        return _.last(meta.innerHTML.split('</i>'));
+      })
+      .filter((tag) => tag && !tag.match(/[0-9]/g))
+      .map((t) => t![0].toUpperCase() + t!.substring(1));
+    title.tags = tags;
+  } catch {}
 };

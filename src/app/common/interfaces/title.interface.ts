@@ -13,6 +13,7 @@ export interface TitleInfo {
   tags?: string[];
   rating?: number;
   description?: string;
+  currentlyWatched?: boolean;
 }
 export interface Vote {
   name: string;
