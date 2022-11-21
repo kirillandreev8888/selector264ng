@@ -9,6 +9,7 @@ import {
   Vote,
 } from 'src/app/common/interfaces/title.interface';
 import { GlobalSharedService } from 'src/app/global.shared.service';
+import { EditService } from 'src/app/pages/edit/edit.service';
 @UntilDestroy()
 @Component({
   selector: 'titleCard',
@@ -22,6 +23,7 @@ export class TitleCardComponent implements OnInit {
   @Output() checkedChange = new EventEmitter<boolean>();
   constructor(
     public globalSharedService: GlobalSharedService,
+    private editService: EditService,
     private database: AngularFireDatabase,
   ) {}
   /** за что отдан голос текущего пользователя */
@@ -104,5 +106,12 @@ export class TitleCardComponent implements OnInit {
         `/${this.globalSharedService.currentListOwner.value}/${this.mode}/${this.title.id}`,
       )
       .set(this.title);
+  }
+
+  async toggleWatchStatus(title: TitleInfoWithId){
+    title.currentlyWatched = !title.currentlyWatched;
+    let id = title.id;
+    delete (title as TitleInfo & { id?: string }).id;
+    await this.editService.updateTitle(title, this.mode ? this.mode : 'titles', id);
   }
 }
