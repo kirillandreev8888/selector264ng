@@ -146,6 +146,18 @@
                         (click)="moveTitleToList()">Вышло</button>
                 <button class="btn btn-success"
                         (click)="saveTitle()">Сохранить изменения</button>
+                <button *ngIf="globalSharedService.currentUser.value.hasList && globalSharedService.currentUser.value.userName != globalSharedService.currentListOwner.value"
+                        class="btn btn-info text-white"
+                        (click)="copyTitleToUserList()">
+                    <span *ngIf="copyLoading">
+                        <span class="spinner-border text-white" style="height: 1.2em; width: 1.2em;"
+                             role="status">
+                    </span> Копирование...
+                    </span>
+                    <span *ngIf="!copyLoading">
+                        Копировать себе
+                    </span>
+                </button>
             </div>
         </div>
     </div>

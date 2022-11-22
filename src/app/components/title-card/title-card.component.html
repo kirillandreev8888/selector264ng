@@ -47,12 +47,13 @@
                [ngClass]="title.watch_link ? 'btn-success': 'btn-outline-success'"
                [class.disabled]="!title.watch_link"
                [href]="title.watch_link" target="_blank">Смотреть</a>
-            <a class="btn flex-grow-1 py-0 d-flex justify-content-center align-items-center"
+            <button class="btn flex-grow-1 py-0 d-flex justify-content-center align-items-center"
                [ngClass]="title.torrent_link ? 'btn-success': 'btn-outline-success'"
                [class.disabled]="!title.torrent_link"
-               [href]="title.torrent_link">
+               (click)="magnetUrlClick()"
+               >
                 <div class="icon-mimic"><span>µ</span></div>
-            </a>
+            </button>
         </div>
     </div>
     <div class="flex-grow-0 p-0 right-column gap-2">

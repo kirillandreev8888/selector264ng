@@ -52,7 +52,7 @@ export class TitleCardComponent implements OnInit {
       ? this.title.votes
           .filter((v) => v.value == voteValue)
           .map((v) =>
-            v.name == this.globalSharedService.currentUser.value
+            v.name == this.globalSharedService.currentUser.value.name
               ? 'Вы'
               : v.name,
           )
@@ -61,7 +61,7 @@ export class TitleCardComponent implements OnInit {
   getUserVote(): VoteValue | undefined {
     if (this.title?.votes)
       for (let vote of this.title.votes)
-        if (vote.name == this.globalSharedService.currentUser.value)
+        if (vote.name == this.globalSharedService.currentUser.value.name)
           return vote.value;
     return undefined;
   }
@@ -90,7 +90,7 @@ export class TitleCardComponent implements OnInit {
     if (!this.title) return;
     if (!this.title.votes?.length) this.title.votes = [];
     let userVote = this.title.votes.find(
-      (v) => v.name == this.globalSharedService.currentUser.value,
+      (v) => v.name == this.globalSharedService.currentUser.value.name,
     );
     if (userVote) {
       if (userVote.value == vote)
@@ -98,20 +98,31 @@ export class TitleCardComponent implements OnInit {
       userVote.value = vote;
     } else
       this.title.votes.push({
-        name: this.globalSharedService.currentUser.value,
+        name: this.globalSharedService.currentUser.value.name,
         value: vote,
       });
+    const titleToSave = _.cloneDeep(this.title);
+    delete (titleToSave as TitleInfo & { id?: string }).id;
     await this.database
       .object(
         `/${this.globalSharedService.currentListOwner.value}/${this.mode}/${this.title.id}`,
       )
-      .set(this.title);
+      .set(titleToSave);
   }
 
-  async toggleWatchStatus(title: TitleInfoWithId){
+  async toggleWatchStatus(title: TitleInfoWithId) {
     title.currentlyWatched = !title.currentlyWatched;
     let id = title.id;
     delete (title as TitleInfo & { id?: string }).id;
-    await this.editService.updateTitle(title, this.mode ? this.mode : 'titles', id);
+    await this.editService.updateTitle(
+      title,
+      this.mode ? this.mode : 'titles',
+      id,
+    );
+  }
+
+  magnetUrlClick() {
+    if (this.title.torrent_link)
+      window.open(this.title.torrent_link);
   }
 }
