@@ -76,8 +76,8 @@ export class ListComponent implements OnInit {
               map((res) =>
                 res
                   .map((snapshot) => ({
-                    id: snapshot.key!,
                     ...snapshot.payload.val(),
+                    id: snapshot.key!,
                   }))
                   .filter(
                     (title) =>

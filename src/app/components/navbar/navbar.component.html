@@ -78,14 +78,14 @@
                            class="nav-link text-light dropdown-toggle py-0"
                            id="navDrop2"
                            ngbDropdownToggle>
-                            {{globalSharedService.currentUser.value}}
+                            {{globalSharedService.currentUser.value.name}}
                         </a>
                     </div>
                     <div ngbDropdownMenu
                          aria-labelledby="navDrop2">
                         <ng-container *ngFor="let user of users">
                             <button ngbDropdownItem
-                                    (click)="setUser(user.name)">{{user.name}}</button>
+                                    (click)="setUser(user)">{{user.name}}</button>
                         </ng-container>
                     </div>
                 </li>

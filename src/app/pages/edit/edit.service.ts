@@ -50,13 +50,14 @@ export class EditService {
       });
   }
 
-  public async addTitle(title: TitleInfo) {
+  public async addTitle(title: TitleInfo, userName?: string) {
     // для добавления используем push в list
+    // если указан userName, добавляем в список пользователя по userName
     return await this.database
       .list(
-        `/${this.globalSharedService.currentListOwner.value}/${
-          title.status == 'archive' ? 'archive' : 'titles'
-        }/`,
+        `/${
+          userName ? userName : this.globalSharedService.currentListOwner.value
+        }/${title.status == 'archive' ? 'archive' : 'titles'}/`,
       )
       .push(title);
   }
@@ -94,8 +95,8 @@ export class EditService {
     } else {
       // если путь меняется, меняем статус, сохраняем, удаляем старый объект
       title.status = to;
-      await this.addTitle(title)
-      return await this.deleteTitle(pathFrom, id)
+      await this.addTitle(title);
+      return await this.deleteTitle(pathFrom, id);
     }
   }
 }

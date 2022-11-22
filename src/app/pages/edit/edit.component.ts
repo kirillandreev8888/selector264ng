@@ -5,6 +5,7 @@ import {
 } from '@angular/fire/compat/database';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import * as _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import parse from 'node-html-parser';
 import {
@@ -33,9 +34,10 @@ export class EditComponent implements OnInit {
     private database: AngularFireDatabase,
     private toastr: ToastrService,
     private editService: EditService,
-    private globalSharedService: GlobalSharedService,
+    public globalSharedService: GlobalSharedService,
     private activatedRoute: ActivatedRoute,
   ) {}
+  /** сообщение с информацией о состоянии процедуры парса */
   loadingMessage?: string;
   title?: TitleInfo = {
     // shiki_link:
@@ -44,6 +46,8 @@ export class EditComponent implements OnInit {
     votes: [],
     status: 'list',
   };
+  /** состояние загрузки для кнопки "скопировать тайтл" */
+  copyLoading: boolean = false;
   ngOnInit(): void {
     // console.log(this.activatedRoute.snapshot.queryParams);
     if (this.mode == 'edit' && this.id && this.from) {
@@ -185,6 +189,33 @@ export class EditComponent implements OnInit {
     }
     await this.editService.moveTitle(this.title, this.id, 'list');
     window.history.back();
+  }
+
+  async copyTitleToUserList() {
+    if (!this.title || !this.from || !this.id) {
+      this.showToastrError('Null title error');
+      return;
+    }
+    this.copyLoading = true;
+    let title = _.cloneDeep(this.title);
+    if (title.status == 'archive') title.status = 'list';
+    if (title.shiki_link?.includes('shikimori') && !title.episodes) {
+      const root = parse(
+        await this.editService.getHtmlContent(title.shiki_link!),
+      );
+      parseFromShikimori(root, title);
+    }
+    if (title.currentlyWatched !== false) title.currentlyWatched = false;
+    await this.editService.addTitle(
+      title,
+      this.globalSharedService.currentUser.value.userName,
+    );
+    this.copyLoading = false;
+    this.toastr.success(
+      `Тайтл "${title.name}" добавлен в ваш список`,
+      undefined,
+      { timeOut: 1000 },
+    );
   }
 
   showToastrError(error: string): void {
