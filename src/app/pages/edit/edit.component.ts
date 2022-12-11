@@ -96,7 +96,7 @@ export class EditComponent implements OnInit {
       const timeout = setTimeout(() => {
         if (this.loadingMessage == 'Загрузка...')
           this.loadingMessage =
-            'Скорее всего, прокси спит... Ожидание, пока проснется...';
+            'Новый прокси для парсера очень медленный... Но я пока ничего лучше не нашел(';
       }, 3000);
       this.loadingMessage = 'Загрузка...';
       // await new Promise((resolve) => setTimeout(resolve, 5000));
