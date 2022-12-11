@@ -20,7 +20,7 @@
             </ul>
             <div>
                 <div class="mb-3 title-card-container"
-                     *ngFor="let title of titles | titlesSort : sort">
+                     *ngFor="let title of titles | titlesSort : sort : mode=='archive'">
                     <titleCard [mode]="mode"
                                [title]="title"
                                [(checked)]="checkedTitles[title.id]"></titleCard>

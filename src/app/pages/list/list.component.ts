@@ -125,6 +125,8 @@ export class ListComponent implements OnInit {
 
   /** начать обновление списка онгоингов */
   async initiateOngoingUpdate() {
+    if (!confirm('Из-за нового прокси обновление будет происходить очень медленно...'
+      +'\nНе закрывайте страницу, чтобы не прерывать процеесс.'+'\nПродолжить?')) return;
     let titlesToUpdate = _.cloneDeep(this.titles).filter((title) =>
       title.shiki_link?.includes('shikimori'),
     );

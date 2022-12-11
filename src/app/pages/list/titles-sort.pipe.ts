@@ -14,7 +14,9 @@ export class TitlesSortPipe implements PipeTransform {
   transform(
     value: TitleInfoWithId[],
     sort: 'add' | 'release' | 'votes' | 'rating',
+    archive?: boolean,
   ): TitleInfoWithId[] {
+    if (!!archive) sort='add';
     if (sort == 'add') return _.reverse(_.cloneDeep(value));
     else if (sort == 'release')
       return _.cloneDeep(value).sort((a, b) => {
