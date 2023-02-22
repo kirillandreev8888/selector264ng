@@ -8,7 +8,7 @@ import {
   TitlePath,
   TitleStatus,
 } from 'src/app/common/interfaces/title.interface';
-import { PROXY_URL } from 'src/app/consts';
+import { PROXY_URL, PROXY_URL_FOR_JUTSU } from 'src/app/consts';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 
 @Injectable({
@@ -32,22 +32,17 @@ export class EditService {
   ): Promise<string> {
     return fetch(PROXY_URL + url).then((data) => {
       if (emitState) emitState('Расшифровка...');
-      return data.text();
+      return data.json().then((w) => w.contents);
     });
   }
   public async getHtmlWindows1251Content(
     url: string,
     emitState?: (state: string) => {},
   ): Promise<string> {
-    return fetch(PROXY_URL + url)
-      .then((response) => {
-        if (emitState) emitState('Расшифровка...');
-        return response.arrayBuffer();
-      })
-      .then((buffer) => {
-        let html = new TextDecoder('windows-1251').decode(buffer);
-        return new Promise((resolve) => resolve(html));
-      });
+    return fetch(PROXY_URL_FOR_JUTSU + url).then((data) => {
+      if (emitState) emitState('Расшифровка...');
+      return data.json().then((w) => w.contents);
+    });
   }
 
   public async addTitle(title: TitleInfo, userName?: string) {
