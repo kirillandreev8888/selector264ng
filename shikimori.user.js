@@ -2,8 +2,9 @@
 // @name        ShikimoriAddToList
 // @namespace   Violentmonkey Scripts
 // @match       https://shikimori.one/*
+// @match       https://shikimori.me/*
 // @grant       none
-// @version     1.2
+// @version     1.3
 // @author      uspdd
 // @description 19.11.2022, 18:51:05
 // @downloadURL https://raw.githubusercontent.com/kirillandreev8888/selector264ng/master/shikimori.user.js
