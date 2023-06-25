@@ -164,7 +164,11 @@ export class ListComponent implements OnInit {
           attempts++;
         }
         if (attempts == 5)
-          this.toastr.error(`Прокси не отвечает более 5 раз, тайтл "${title.name}" пропущен`, 'Ошибка парсинга', {disableTimeOut: true});
+          {
+            this.toastr.error(`Прокси не отвечает более 5 раз, тайтл "${title.name}" пропущен`, 'Ошибка парсинга', {disableTimeOut: true});
+            // для полоски считаем успешным
+            this.ongoingUpdateData.processed++;
+          }
       }
     }
   }
