@@ -125,8 +125,14 @@ export class ListComponent implements OnInit {
 
   /** начать обновление списка онгоингов */
   async initiateOngoingUpdate() {
-    if (!confirm('Из-за нового прокси обновление будет происходить очень медленно...'
-      +'\nНе закрывайте страницу, чтобы не прерывать процеесс.'+'\nПродолжить?')) return;
+    if (
+      !confirm(
+        'Из-за нового прокси обновление будет происходить очень медленно...' +
+          '\nНе закрывайте страницу, чтобы не прерывать процеесс.' +
+          '\nПродолжить?',
+      )
+    )
+      return;
     let titlesToUpdate = _.cloneDeep(this.titles).filter((title) =>
       title.shiki_link?.includes('shikimori'),
     );
@@ -137,19 +143,29 @@ export class ListComponent implements OnInit {
       cameOutList: [],
     };
     for (let title of titlesToUpdate) {
-      const oldStatus = title.status;
-      const root = parse(
-        await this.editService.getHtmlContent(title.shiki_link!),
-      );
-      parseFromShikimori(root, title);
-      if (title.status != oldStatus)
-        this.ongoingUpdateData.cameOutList.push(
-          title.name ? title.name : 'Unnamed',
-        );
-      let id = title.id;
-      delete (title as TitleInfo & { id?: string }).id;
-      await this.editService.updateTitle(title, this.mode, id);
-      this.ongoingUpdateData.processed++;
+      let attempts = 0;
+      while (attempts < 5) {
+        try {
+          const oldStatus = title.status;
+          const root = parse(
+            await this.editService.getHtmlContent(title.shiki_link!),
+          );
+          parseFromShikimori(root, title);
+          if (title.status != oldStatus)
+            this.ongoingUpdateData.cameOutList.push(
+              title.name ? title.name : 'Unnamed',
+            );
+          let id = title.id;
+          delete (title as TitleInfo & { id?: string }).id;
+          await this.editService.updateTitle(title, this.mode, id);
+          this.ongoingUpdateData.processed++;
+          break;
+        } catch (e) {
+          attempts++;
+        }
+        if (attempts == 5)
+          this.toastr.error(`Прокси не отвечает более 5 раз, тайтл "${title.name}" пропущен`, 'Ошибка парсинга', {disableTimeOut: true});
+      }
     }
   }
 }

@@ -92,39 +92,44 @@ export class EditComponent implements OnInit {
       link = this.title.watch_link ? this.title.watch_link : '';
     }
     if (link.indexOf(source) !== -1) {
-      //подготовка
-      const timeout = setTimeout(() => {
-        if (this.loadingMessage == 'Загрузка...')
-          this.loadingMessage =
-            'Новый прокси для парсера очень медленный... Но я пока ничего лучше не нашел(';
-      }, 3000);
-      this.loadingMessage = 'Загрузка...';
-      // await new Promise((resolve) => setTimeout(resolve, 5000));
-      let decipheredData =
-        source == 'jut.su'
-          ? await this.editService.getHtmlWindows1251Content(
-              link,
-              (state) => (this.loadingMessage = state),
-            )
-          : await this.editService.getHtmlContent(
-              link,
-              (state) => (this.loadingMessage = state),
-            );
-      this.loadingMessage = 'Обработка...';
-      const root = parse(decipheredData);
-      //очищаем поля
-      this.cleanTitle();
-      //вызываем нужный парсер
-      switch (source) {
-        case 'shikimori':
-          parseFromShikimori(root, this.title);
-          break;
-        case 'jut.su':
-          parseFromJutsu(root, this.title);
-          break;
+      try {
+        //подготовка
+        const timeout = setTimeout(() => {
+          if (this.loadingMessage == 'Загрузка...')
+            this.loadingMessage =
+              'Новый прокси для парсера очень медленный... Но я пока ничего лучше не нашел(';
+        }, 3000);
+        this.loadingMessage = 'Загрузка...';
+        // await new Promise((resolve) => setTimeout(resolve, 5000));
+        let decipheredData =
+          source == 'jut.su'
+            ? await this.editService.getHtmlWindows1251Content(
+                link,
+                (state) => (this.loadingMessage = state),
+              )
+            : await this.editService.getHtmlContent(
+                link,
+                (state) => (this.loadingMessage = state),
+              );
+        this.loadingMessage = 'Обработка...';
+        const root = parse(decipheredData);
+        //очищаем поля
+        this.cleanTitle();
+        //вызываем нужный парсер
+        switch (source) {
+          case 'shikimori':
+            parseFromShikimori(root, this.title);
+            break;
+          case 'jut.su':
+            parseFromJutsu(root, this.title);
+            break;
+        }
+        this.loadingMessage = undefined;
+        clearTimeout(timeout);
+      } catch (e) {
+        console.log(e);
+        this.showToastrError('Ошибка - получены невалидные данные с прокси');
       }
-      this.loadingMessage = undefined;
-      clearTimeout(timeout);
     } else alert('Неправильная ссылка');
   }
 
@@ -200,10 +205,15 @@ export class EditComponent implements OnInit {
     let title = _.cloneDeep(this.title);
     if (title.status == 'archive') title.status = 'list';
     if (title.shiki_link?.includes('shikimori') && !title.episodes) {
-      const root = parse(
-        await this.editService.getHtmlContent(title.shiki_link!),
-      );
-      parseFromShikimori(root, title);
+      try {
+        const root = parse(
+          await this.editService.getHtmlContent(title.shiki_link!),
+        );
+        parseFromShikimori(root, title);
+      } catch (e) {
+        console.log(e);
+        this.showToastrError('Ошибка - получены невалидные данные с прокси');
+      }
     }
     if (title.currentlyWatched !== false) title.currentlyWatched = false;
     await this.editService.addTitle(
