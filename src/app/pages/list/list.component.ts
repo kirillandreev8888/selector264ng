@@ -52,6 +52,9 @@ export class ListComponent implements OnInit {
   /** тип сортировки */
   sort: 'add' | 'release' | 'votes' | 'rating' =
     <'add' | 'release'>localStorage.getItem('sort') || 'add';
+  /** фильтр "показывать только не оцененные" */
+  onlyNotRated = false;
+  
   constructor(
     private activatedRoute: ActivatedRoute,
     private database: AngularFireDatabase,

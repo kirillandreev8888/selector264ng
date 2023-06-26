@@ -20,7 +20,7 @@
             </ul>
             <div>
                 <div class="mb-3 title-card-container"
-                     *ngFor="let title of titles | titlesSort : sort : mode=='archive'">
+                     *ngFor="let title of titles | titlesSort : sort : onlyNotRated : mode=='archive'">
                     <titleCard [mode]="mode"
                                [title]="title"
                                [(checked)]="checkedTitles[title.id]"></titleCard>
@@ -80,6 +80,10 @@
                        (ngModelChange)="saveSortMode()">
                 <label class="btn btn-outline-primary br-lt-0 br-lb-0 br-rt-0"
                        for="sort-radio-4">Рейтинг</label>
+            </div>
+            <div class="mb-2 w-100 form-check form-switch user-select-none" role="button">
+              <input class="form-check-input" type="checkbox" id="onlyNotRatedCheck" [(ngModel)]="onlyNotRated">
+              <label class="form-check-label" for="onlyNotRatedCheck">Только не оцененные</label>
             </div>
             <ng-container *ngIf="submode=='list'">
                 <button class="btn btn-success mb-2 w-100 d-block"

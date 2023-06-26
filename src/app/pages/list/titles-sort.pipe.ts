@@ -6,20 +6,31 @@ import {
   Vote,
   VoteValue,
 } from 'src/app/common/interfaces/title.interface';
+import { GlobalSharedService } from 'src/app/global.shared.service';
 
 @Pipe({
   name: 'titlesSort',
 })
 export class TitlesSortPipe implements PipeTransform {
+  constructor(private globalSharedService: GlobalSharedService) {}
   transform(
     value: TitleInfoWithId[],
     sort: 'add' | 'release' | 'votes' | 'rating',
+    onlyNotRated: boolean,
     archive?: boolean,
   ): TitleInfoWithId[] {
-    if (!!archive) sort='add';
-    if (sort == 'add') return _.reverse(_.cloneDeep(value));
+    if (!!archive) sort = 'add';
+    const list = onlyNotRated
+      ? value.filter(
+          (title) =>
+            !title.votes?.some(
+              (v) => v.name == this.globalSharedService.currentUser.value.name,
+            ),
+        )
+      : value;
+    if (sort == 'add') return _.reverse(_.cloneDeep(list));
     else if (sort == 'release')
-      return _.cloneDeep(value).sort((a, b) => {
+      return _.cloneDeep(list).sort((a, b) => {
         if (!a.date || !b.date) return 0;
         else {
           let aDate = NgbDate.from(a.date);
@@ -29,11 +40,11 @@ export class TitlesSortPipe implements PipeTransform {
         }
       });
     else if (sort == 'rating')
-      return _.cloneDeep(value).sort((a, b) =>
+      return _.cloneDeep(list).sort((a, b) =>
         a.rating && b.rating ? b.rating - a.rating : 0,
       );
     else {
-      return _.cloneDeep(value).sort((a, b) => {
+      return _.cloneDeep(list).sort((a, b) => {
         if (!a.votes || !b.votes) return 0;
         else return getVotesSum(b.votes) - getVotesSum(a.votes);
       });
