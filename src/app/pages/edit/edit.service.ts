@@ -32,7 +32,7 @@ export class EditService {
   ): Promise<string> {
     return fetch(PROXY_URL + url).then((data) => {
       if (emitState) emitState('Расшифровка...');
-      return data.json().then((w) => w.contents);
+      return data.text()
     });
   }
   public async getHtmlWindows1251Content(
