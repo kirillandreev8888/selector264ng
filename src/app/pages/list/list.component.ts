@@ -128,14 +128,17 @@ export class ListComponent implements OnInit {
 
   /** начать обновление списка онгоингов */
   async initiateOngoingUpdate() {
-    if (
-      !confirm(
-        'Из-за нового прокси обновление будет происходить очень медленно...' +
-          '\nНе закрывайте страницу, чтобы не прерывать процеесс.' +
-          '\nПродолжить?',
-      )
-    )
-      return;
+    // if (
+    //   !confirm(
+    //     'Из-за нового прокси обновление будет происходить очень медленно...' +
+    //       '\nНе закрывайте страницу, чтобы не прерывать процеесс.' +
+    //       '\nПродолжить?',
+    //   )
+    // )
+    //   return;
+    this.toastr.info('Обновление списка онгоингов началось, не закрывайте страницу до окончания.', undefined, {
+      timeOut: 2500,
+    })
     let titlesToUpdate = _.cloneDeep(this.titles).filter((title) =>
       title.shiki_link?.includes('shikimori'),
     );
