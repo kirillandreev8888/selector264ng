@@ -124,11 +124,12 @@ export class EditComponent implements OnInit {
             parseFromJutsu(root, this.title);
             break;
         }
-        this.loadingMessage = undefined;
         clearTimeout(timeout);
       } catch (e) {
         console.log(e);
-        this.showToastrError('Ошибка - получены невалидные данные с прокси');
+        this.showToastrError('Ошибка - получены невалидные данные');
+      } finally {
+        this.loadingMessage = undefined;
       }
     } else alert('Неправильная ссылка');
   }

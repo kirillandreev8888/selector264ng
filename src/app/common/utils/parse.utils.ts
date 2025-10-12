@@ -1,13 +1,16 @@
-import { TitleInfo } from '../interfaces/title.interface';
-import { HTMLElement } from 'node-html-parser';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import * as _ from 'lodash';
+import { HTMLElement } from 'node-html-parser';
+import { TitleInfo } from '../interfaces/title.interface';
 
 export const parseFromShikimori = (root: HTMLElement, title: TitleInfo) => {
+  //имя
+  const h1Text = root.querySelector('h1')?.innerHTML.split('<span')?.[0];
+  if (h1Text?.toLowerCase().includes('эта страница содержит'))
+    throw 'Ошибка парсинга - требуется регистрация.'
+  title.name = h1Text;
   //картинка
   title.pic = root.querySelector('.c-poster img')?.getAttribute('src');
-  //имя
-  title.name = root.querySelector('h1')?.innerHTML.split('<span')?.[0];
   //статус
   title.status =
     root.querySelector('.b-anime_status_tag')?.getAttribute('data-text') ===

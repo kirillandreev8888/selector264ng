@@ -1,23 +1,21 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AngularFireDatabase,
-  AngularFireObject,
+  AngularFireDatabase
 } from '@angular/fire/compat/database';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as _ from 'lodash';
 import { ToastrService } from 'ngx-toastr';
+import parse from 'node-html-parser';
 import { map, switchMap } from 'rxjs/operators';
 import {
-  TitleInfoWithId,
   TitleInfo,
+  TitleInfoWithId,
   TitlePath,
 } from 'src/app/common/interfaces/title.interface';
+import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from '../edit/edit.service';
-import parse from 'node-html-parser';
-import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
-import { Subscription } from 'rxjs';
 
 @UntilDestroy()
 @Component({

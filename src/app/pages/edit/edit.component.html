@@ -44,7 +44,7 @@
                        [(ngModel)]="title && title.watch_link">
             </div>
             <!-- ссылка на шикимори -->
-            <div class="input-group mb-2">
+            <div class="input-group mb-3">
                 <button class="btn btn-primary"
                         type="button"
                         (click)="parseFrom('shikimori')">Парсить с shikimori.one</button>
@@ -53,10 +53,21 @@
                        placeholder="Ссылка на шикимори"
                        [(ngModel)]="title && title.shiki_link">
             </div>
-            <div class="parser-warning form-text mb-3">
+            <!-- название -->
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    Картинка
+                </span>
+                <input type="text"
+                       class="form-control"
+                       id="input-pic"
+                       placeholder="URL картинки"
+                       [(ngModel)]="title && title.pic">
+            </div>
+            <!-- <div class="parser-warning form-text mb-3">
                 Парсер в бездействии находится в "спящем режиме". Если он не отвечает, необходимо подождать, пока он
                 "проснется".
-            </div>
+            </div> -->
             <!-- Ссылка на торрент -->
             <div class="input-group mb-3">
                 <span class="input-group-text bg-success text-white">
