@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import request, { gql } from 'graphql-request';
 import {
   TitleInfo,
   TitlePath,
@@ -10,6 +9,7 @@ import {
 } from 'src/app/common/interfaces/title.interface';
 import { PROXY_URL, PROXY_URL_FOR_JUTSU } from 'src/app/consts';
 import { GlobalSharedService } from 'src/app/global.shared.service';
+import { ShikimoriApiAnimesResponse } from './dto/shikimori.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export class EditService {
   ): Promise<string> {
     return fetch(PROXY_URL + url).then((data) => {
       if (emitState) emitState('Расшифровка...');
-      return data.text()
+      return data.text();
     });
   }
   public async getHtmlWindows1251Content(
@@ -43,6 +43,99 @@ export class EditService {
       if (emitState) emitState('Расшифровка...');
       return data.json().then((w) => w.contents);
     });
+  }
+
+  private getAnimeIdFromUrl(url: string): number {
+    const regex = /\/animes\/(\d+)/;
+    const match = url.match(regex);
+
+    return !isNaN(Number(match?.[1])) ? Number(match?.[1]) : 0;
+  }
+
+  private getShikimoriGraphQLRequest(id: number): string {
+    return gql`
+      {
+        animes(ids: "${id}", limit: 1) {
+          id
+          name
+          russian
+          licenseNameRu
+          kind
+          rating
+          score
+          status
+          episodes
+          episodesAired
+          duration
+          airedOn {
+            year
+            month
+            day
+            date
+          }
+          releasedOn {
+            year
+            month
+            day
+            date
+          }
+          season
+
+          poster {
+            id
+            originalUrl
+            mainUrl
+          }
+
+          genres {
+            id
+            name
+            russian
+            kind
+          }
+
+          description
+          descriptionHtml
+          descriptionSource
+        }
+      }
+    `;
+  }
+
+  async fetchShikimoriAPI(url: string): Promise<TitleInfo> {
+    const animeId = this.getAnimeIdFromUrl(url);
+    if (!animeId) throw new Error('Не удалось получить id аниме из url');
+    try {
+      const res: ShikimoriApiAnimesResponse = await request(
+        'https://shikimori.one/api/graphql/',
+        this.getShikimoriGraphQLRequest(animeId),
+      );
+      const anime = res.animes[0];
+      if (!anime?.name?.length) throw new Error();
+
+      const title: TitleInfo = {
+        name: anime.russian?.length ? anime.russian : anime.name,
+        pic: anime.poster?.originalUrl,
+        status: anime.status == 'released' ? 'list' : 'ongoing',
+        episodes:
+          anime.status == 'anons'
+            ? undefined
+            : anime.status == 'released'
+            ? anime.episodes.toString()
+            : `${anime.episodesAired}/${anime.episodes}`,
+        date: {
+          day: anime.airedOn.day,
+          month: anime.airedOn.month,
+          year: anime.airedOn.year,
+        },
+        tags: anime.genres.map((genre) => genre.russian),
+        rating: anime.score,
+      };
+      return title;
+    } catch (e) {
+      console.error(e);
+      throw new Error('Не удалось получить данные с сайта shikimori');
+    }
   }
 
   public async addTitle(title: TitleInfo, userName?: string) {

@@ -75,6 +75,31 @@ export class EditComponent implements OnInit {
     }
   }
 
+  async setTitleContentFromShikimoriApi() {
+    if (!this.title?.shiki_link?.length) {
+      this.showToastrError(
+        'Необходимо ввести ссылку на аниме в поле "Ссылка на шикимори"',
+      );
+      return;
+    }
+    try {
+      const title = await this.editService.fetchShikimoriAPI(
+        this.title?.shiki_link!,
+      );
+      this.title.name = title.name;
+      this.title.pic = title.pic;
+      this.title.status = title.status;
+      this.title.episodes = title.episodes;
+      this.title.date = title.date;
+      this.title.tags = title.tags;
+      this.title.rating = title.rating;
+    } catch (e) {
+      if (e instanceof Error) {
+        this.showToastrError(e.message);
+      }
+    }
+  }
+
   async parseFrom(source: 'shikimori' | 'jut.su') {
     if (!this.title) {
       this.showToastrError('Null title error');

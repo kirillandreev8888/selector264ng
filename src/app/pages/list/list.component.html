@@ -35,7 +35,7 @@
                 (click)="rightMenuOpen = !rightMenuOpen">{{rightMenuOpen ? '>' : '&lt;'}}</button>
         <div class="content mt-3 px-2"
              #collapse="ngbCollapse"
-             [(ngbCollapse)]="!rightMenuOpen"
+             [ngbCollapse]="!rightMenuOpen"
              [horizontal]="true">
             <div class="btn-group d-flex w-100"
                  role="group">

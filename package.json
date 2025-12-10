@@ -28,6 +28,7 @@
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.9.1",
     "firebase-key": "^2.0.2",
+    "graphql-request": "^7.3.5",
     "lodash": "^4.17.21",
     "ngx-bootstrap-navbar": "^14.0.0",
     "ngx-toastr": "^15.2.1",

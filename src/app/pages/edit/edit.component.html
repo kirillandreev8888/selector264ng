@@ -35,9 +35,9 @@
             </div>
             <!-- ссылка на просмотр -->
             <div class="input-group mb-3">
-                <button class="btn btn-warning"
+                <!-- <button class="btn btn-warning"
                         type="button"
-                        (click)="parseFrom('jut.su')">jut.su</button>
+                        (click)="parseFrom('jut.su')">jut.su</button> -->
                 <input type="text"
                        class="form-control"
                        placeholder="Ссылка на просмотр"
@@ -47,7 +47,7 @@
             <div class="input-group mb-3">
                 <button class="btn btn-primary"
                         type="button"
-                        (click)="parseFrom('shikimori')">Парсить с shikimori.one</button>
+                        (click)="setTitleContentFromShikimoriApi()">Запросить API shikimori</button>
                 <input type="text"
                        class="form-control"
                        placeholder="Ссылка на шикимори"
