@@ -102,7 +102,7 @@ export class EditService {
     `;
   }
 
-  async fetchShikimoriAPI(url: string): Promise<TitleInfo> {
+  private async fetchShikimoriAPI(url: string): Promise<TitleInfo> {
     const animeId = this.getAnimeIdFromUrl(url);
     if (!animeId) throw new Error('Не удалось получить id аниме из url');
     try {
@@ -135,6 +135,33 @@ export class EditService {
     } catch (e) {
       console.error(e);
       throw new Error('Не удалось получить данные с сайта shikimori');
+    }
+  }
+
+  async setTitleContentFromShikimoriApi(
+    title: TitleInfo | undefined,
+    showErrorFunc?: (text: string) => void,
+  ) {
+    if (!title) return;
+    if (!title?.shiki_link?.length) {
+      showErrorFunc?.(
+        'Необходимо ввести ссылку на аниме в поле "Ссылка на шикимори"',
+      );
+      return;
+    }
+    try {
+      const titleData = await this.fetchShikimoriAPI(title?.shiki_link!);
+      title.name = titleData.name;
+      title.pic = titleData.pic;
+      title.status = titleData.status;
+      title.episodes = titleData.episodes;
+      title.date = titleData.date;
+      title.tags = titleData.tags;
+      title.rating = titleData.rating;
+    } catch (e) {
+      if (e instanceof Error) {
+        showErrorFunc?.(e.message);
+      }
     }
   }
 

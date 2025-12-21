@@ -13,7 +13,6 @@ import {
   TitleInfoWithId,
   TitlePath,
 } from 'src/app/common/interfaces/title.interface';
-import { parseFromShikimori } from 'src/app/common/utils/parse.utils';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from '../edit/edit.service';
 
@@ -151,10 +150,7 @@ export class ListComponent implements OnInit {
       while (attempts < 5) {
         try {
           const oldStatus = title.status;
-          const root = parse(
-            await this.editService.getHtmlContent(title.shiki_link!),
-          );
-          parseFromShikimori(root, title);
+          this.editService.setTitleContentFromShikimoriApi(title);
           if (title.status != oldStatus)
             this.ongoingUpdateData.cameOutList.push(
               title.name ? title.name : 'Unnamed',

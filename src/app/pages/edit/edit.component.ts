@@ -12,10 +12,6 @@ import {
   TitleInfo,
   TitlePath,
 } from 'src/app/common/interfaces/title.interface';
-import {
-  parseFromJutsu,
-  parseFromShikimori,
-} from 'src/app/common/utils/parse.utils';
 import { GlobalSharedService } from 'src/app/global.shared.service';
 import { EditService } from './edit.service';
 
@@ -70,94 +66,76 @@ export class EditComponent implements OnInit {
         this.activatedRoute.snapshot.queryParams['parseFromShikimori'];
       if (query && typeof query == 'string' && query.includes('shikimori')) {
         if (this.title) this.title.shiki_link = query;
-        this.parseFrom('shikimori');
+        this.setTitleContentFromShikimoriApi();
       }
     }
   }
 
   async setTitleContentFromShikimoriApi() {
-    if (!this.title?.shiki_link?.length) {
-      this.showToastrError(
-        'Необходимо ввести ссылку на аниме в поле "Ссылка на шикимори"',
-      );
-      return;
-    }
-    try {
-      const title = await this.editService.fetchShikimoriAPI(
-        this.title?.shiki_link!,
-      );
-      this.title.name = title.name;
-      this.title.pic = title.pic;
-      this.title.status = title.status;
-      this.title.episodes = title.episodes;
-      this.title.date = title.date;
-      this.title.tags = title.tags;
-      this.title.rating = title.rating;
-    } catch (e) {
-      if (e instanceof Error) {
-        this.showToastrError(e.message);
-      }
-    }
+    this.editService.setTitleContentFromShikimoriApi(
+      this.title,
+      this.showToastrError,
+    );
   }
 
-  async parseFrom(source: 'shikimori' | 'jut.su') {
-    if (!this.title) {
-      this.showToastrError('Null title error');
-      return;
-    }
-    let link = '';
-    //определяем url, с которого парсим
-    if (source == 'shikimori') {
-      if (!this.title?.shiki_link?.length && this.title)
-        this.title.shiki_link = await navigator.clipboard.readText();
-      link = this.title.shiki_link ? this.title.shiki_link : '';
-    } else if (source == 'jut.su') {
-      if (!this.title?.watch_link?.length && this.title)
-        this.title.watch_link = await navigator.clipboard.readText();
-      link = this.title.watch_link ? this.title.watch_link : '';
-    }
-    if (link.indexOf(source) !== -1) {
-      try {
-        //подготовка
-        const timeout = setTimeout(() => {
-          if (this.loadingMessage == 'Загрузка...')
-            this.loadingMessage =
-              'Новый прокси для парсера очень медленный... Но я пока ничего лучше не нашел(';
-        }, 3000);
-        this.loadingMessage = 'Загрузка...';
-        // await new Promise((resolve) => setTimeout(resolve, 5000));
-        let decipheredData =
-          source == 'jut.su'
-            ? await this.editService.getHtmlWindows1251Content(
-                link,
-                (state) => (this.loadingMessage = state),
-              )
-            : await this.editService.getHtmlContent(
-                link,
-                (state) => (this.loadingMessage = state),
-              );
-        this.loadingMessage = 'Обработка...';
-        const root = parse(decipheredData);
-        //очищаем поля
-        this.cleanTitle();
-        //вызываем нужный парсер
-        switch (source) {
-          case 'shikimori':
-            parseFromShikimori(root, this.title);
-            break;
-          case 'jut.su':
-            parseFromJutsu(root, this.title);
-            break;
-        }
-        clearTimeout(timeout);
-      } catch (e) {
-        console.log(e);
-        this.showToastrError('Ошибка - получены невалидные данные');
-      } finally {
-        this.loadingMessage = undefined;
-      }
-    } else alert('Неправильная ссылка');
-  }
+  // async parseFrom(source: 'shikimori' | 'jut.su') {
+  //   if (!this.title) {
+  //     this.showToastrError('Null title error');
+  //     return;
+  //   }
+  //   let link = '';
+  //   //определяем url, с которого парсим
+  //   if (source == 'shikimori') {
+  //     if (!this.title?.shiki_link?.length && this.title)
+  //       this.title.shiki_link = await navigator.clipboard.readText();
+  //     link = this.title.shiki_link ? this.title.shiki_link : '';
+  //   } else if (source == 'jut.su') {
+  //     if (!this.title?.watch_link?.length && this.title)
+  //       this.title.watch_link = await navigator.clipboard.readText();
+  //     link = this.title.watch_link ? this.title.watch_link : '';
+  //   }
+  //   if (link.indexOf(source) !== -1) {
+  //     try {
+  //       //подготовка
+  //       const timeout = setTimeout(() => {
+  //         if (this.loadingMessage == 'Загрузка...')
+  //           this.loadingMessage =
+  //             'Новый прокси для парсера очень медленный... Но я пока ничего лучше не нашел(';
+  //       }, 3000);
+  //       this.loadingMessage = 'Загрузка...';
+  //       // await new Promise((resolve) => setTimeout(resolve, 5000));
+  //       let decipheredData =
+  //         source == 'jut.su'
+  //           ? await this.editService.getHtmlWindows1251Content(
+  //               link,
+  //               (state) => (this.loadingMessage = state),
+  //             )
+  //           : await this.editService.getHtmlContent(
+  //               link,
+  //               (state) => (this.loadingMessage = state),
+  //             );
+  //       this.loadingMessage = 'Обработка...';
+  //       const root = parse(decipheredData);
+  //       //очищаем поля
+  //       this.cleanTitle();
+  //       //вызываем нужный парсер
+  //       switch (source) {
+  //         case 'shikimori':
+  //           parseFromShikimori(root, this.title);
+  //           break;
+  //         case 'jut.su':
+  //           parseFromJutsu(root, this.title);
+  //           break;
+  //       }
+  //       clearTimeout(timeout);
+  //     } catch (e) {
+  //       console.log(e);
+  //       this.showToastrError('Ошибка - получены невалидные данные');
+  //     } finally {
+  //       this.loadingMessage = undefined;
+  //     }
+  //   } else alert('Неправильная ссылка');
+  // }
 
   cleanTitle() {
     delete this.title?.episodes;
@@ -231,15 +209,7 @@ export class EditComponent implements OnInit {
     let title = _.cloneDeep(this.title);
     if (title.status == 'archive') title.status = 'list';
     if (title.shiki_link?.includes('shikimori') && !title.episodes) {
-      try {
-        const root = parse(
-          await this.editService.getHtmlContent(title.shiki_link!),
-        );
-        parseFromShikimori(root, title);
-      } catch (e) {
-        console.log(e);
-        this.showToastrError('Ошибка - получены невалидные данные с прокси');
-      }
+      this.editService.setTitleContentFromShikimoriApi(title);
     }
     if (title.currentlyWatched !== false) title.currentlyWatched = false;
     await this.editService.addTitle(
