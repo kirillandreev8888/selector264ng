@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import request, { gql } from 'graphql-request';
+import { isUndefined, omitBy } from 'lodash';
 import {
   TitleInfo,
   TitlePath,
@@ -183,7 +184,7 @@ export class EditService {
       .object(
         `/${this.globalSharedService.currentListOwner.value}/${path}/${id}`,
       )
-      .set(title);
+      .set(omitBy(title, isUndefined));
   }
   public async deleteTitle(path: string, id: string) {
     // для удаления используем remove на object по id

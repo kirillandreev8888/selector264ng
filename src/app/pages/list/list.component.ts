@@ -150,7 +150,8 @@ export class ListComponent implements OnInit {
       while (attempts < 5) {
         try {
           const oldStatus = title.status;
-          this.editService.setTitleContentFromShikimoriApi(title);
+          await this.editService.setTitleContentFromShikimoriApi(title);
+          await new Promise((resolve) => setTimeout(resolve, 500));
           if (title.status != oldStatus)
             this.ongoingUpdateData.cameOutList.push(
               title.name ? title.name : 'Unnamed',
@@ -161,6 +162,7 @@ export class ListComponent implements OnInit {
           this.ongoingUpdateData.processed++;
           break;
         } catch (e) {
+          console.log(e)
           attempts++;
         }
         if (attempts == 5)
