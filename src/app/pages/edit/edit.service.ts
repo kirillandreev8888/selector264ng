@@ -108,7 +108,7 @@ export class EditService {
     if (!animeId) throw new Error('Не удалось получить id аниме из url');
     try {
       const res: ShikimoriApiAnimesResponse = await request(
-        'https://shikimori.one/api/graphql/',
+        'https://shikimori.io/api/graphql/',
         this.getShikimoriGraphQLRequest(animeId),
       );
       const anime = res.animes[0];

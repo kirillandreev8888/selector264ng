@@ -2,6 +2,7 @@
 // @name        ShikimoriAddToList
 // @namespace   Violentmonkey Scripts
 // @match       https://shikimori.one/*
+// @match       https://shikimori.io/*
 // @match       https://shikimori.me/*
 // @grant       none
 // @version     1.3

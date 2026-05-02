@@ -37,8 +37,8 @@ export class EditComponent implements OnInit {
   loadingMessage?: string;
   title?: TitleInfo = {
     // shiki_link:
-    // 'https://shikimori.one/animes/49918-boku-no-hero-academia-6th-season',
-    // 'https://shikimori.one/animes/z5114-fullmetal-alchemist-brotherhood',
+    // 'https://shikimori.io/animes/49918-boku-no-hero-academia-6th-season',
+    // 'https://shikimori.io/animes/z5114-fullmetal-alchemist-brotherhood',
     votes: [],
     status: 'list',
   };
